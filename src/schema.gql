@@ -1,0 +1,54 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Point {
+  challengeId: String!
+  points: Float!
+  submission_link: String
+}
+
+type Query {
+  participants(query: String!): [User!]!
+  participantsByStatus(participant_status: String!): [User!]!
+  teams: [Team!]!
+  users: [User!]!
+}
+
+type Team {
+  _id: ID
+  name: String!
+  password: String!
+  points: [Point!]
+  submission_link: String
+  teamMembers: [User!]
+  total_points: Float
+  username: String!
+}
+
+type User {
+  _id: ID
+  checkInDates: [DateTime!]
+  checkOutDates: [DateTime!]
+  contactNumber: String
+  discordUsername: String
+  email: String!
+  github: String!
+  hasTeam: Boolean
+  linkedin: String!
+  motivation: String
+  name: String!
+  points: Float!
+  portfolio: String!
+  profilePicture: String
+  role: String!
+  skills: [String!]
+  status: String
+  tShirtSize: String
+  teamName: String
+}
