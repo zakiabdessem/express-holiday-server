@@ -14,29 +14,20 @@ async function bootstrap() {
     rawBody: true,
   });
 
-  // const config = new DocumentBuilder()
-  //   .setTitle('Opera API example')
-  //   .setDescription('The API description')
-  //   .setVersion('1.0')
-  //   .build();
+  const config = new DocumentBuilder()
+    .setTitle('Opera API example')
+    .setDescription('The API description')
+    .setVersion('1.0')
+    .build();
 
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   const options = {
     origin: [
       'http://localhost:5173',
       'http://localhost:3001',
       'http://localhost:3000',
-      'api.gdg-batna.com',
-      'http://api.gdg-batna.com',
-      'https://api.gdg-batna.com',
-      'http://devfest.gdg-batna.com',
-      'https://devfest.gdg-batna.com',
-      'https://www.gdg-batna.com',
-      'https://admin.gdg-batna.com',
-      'https://gdg-batna.com',
-
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,

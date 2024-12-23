@@ -1,185 +1,224 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { User } from './user.schema';
+import { UserEntity } from './user.schema';
 import { UserCreateDto } from './dtos/user-create.dto';
 import { compare, hash } from 'bcryptjs';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserRole } from 'src/decorator/role.entity';
-import { UserEditDto } from './dtos/user-edit.dto';
-import {
-  ParticipantCheckinDto,
-  ParticipantCheckoutDto,
-} from './dtos/participant-checks.dto';
-import { Response } from 'express';
+import { Resend } from 'resend';
+import { randomBytes } from 'crypto';
+import { addMinutes } from 'date-fns';
+import * as bcrypt from 'bcrypt';
+import { renderTemplate } from 'src/helpers/render-template.helper';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Like, Repository } from 'typeorm';
+
+const resend = new Resend('re_Do5TxRpD_HdSQ79w4dct6opUTtRPMnLBb');
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-  async createUserParticipant(createUserDto: UserCreateDto): Promise<User> {
-    //check if user exits first if yes throw erro
-    const user = await this.userModel.findOne({ email: createUserDto.email });
+  async createUserClient(createUserDto: UserCreateDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: createUserDto.email,
+      },
+    });
     if (user) {
-      throw new Error('User already exists');
+      throw new Error('UserEntity already exists');
     }
-    const newUser = new this.userModel({
+    const newUser = this.userRepository.create({
       ...createUserDto,
       password: createUserDto.password
         ? await hash(createUserDto.password, 10)
         : null,
-      status: 'pending',
-      role: UserRole.PARTICIPANT,
+      role: UserRole.CLIENT,
     });
-    await newUser.save();
+
+    await this.userRepository.save(newUser);
 
     return newUser;
   }
 
-  async createUserOrganizer(createUserDto: UserCreateDto): Promise<User> {
-    const user = await this.userModel.findOne({ email: createUserDto.email });
+  async createUserAdmin(createUserDto: UserCreateDto): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({
+      where: { email: createUserDto.email },
+    });
     if (user) {
-      throw new Error('User already exists');
+      throw new Error('UserEntity already exists');
     }
-    const newUser = new this.userModel({
+    const newUser = this.userRepository.create({
       ...createUserDto,
       password: await hash(createUserDto.password, 10),
-      role: UserRole.ORGANIZER,
+      role: UserRole.ADMIN,
     });
-    await newUser.save();
+    await this.userRepository.save(newUser);
 
     return newUser;
   }
 
-  async editParticipant(editUserDto: UserEditDto): Promise<User> {
-    const updatedUser = await this.userModel.findByIdAndUpdate(
-      editUserDto.id,
-      editUserDto,
-    );
+  async generateResetToken(uid: string): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: {
+        id: uid,
+      },
+    });
 
-    if (!updatedUser) throw new Error('No user found');
-
-    return updatedUser;
-  }
-
-  async checkinParticipant(
-    participantCheckinDto: ParticipantCheckinDto,
-    res: Response,
-  ) {
-    const participant = await this.userModel.findById(participantCheckinDto.id);
-
-    if (!participant) throw new Error('No user found');
-
-    if (participant.status !== 'accepted')
-      return res.status(HttpStatus.BAD_REQUEST).json({
-        message: 'User not accepted (Check admin dashboard).',
-      });
-
-    //TODO: CHECK last check in date need to be atleast more than 1 hour
-    const last_checkin =
-      participant.checkInDates[participant.checkInDates.length - 1];
-
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
-    console.log(
-      '🚀 ~ UserService ~ new Date(last_checkin) > oneHourAgo:',
-      new Date(last_checkin),
-    );
-
-    if (last_checkin) {
-      if (new Date(last_checkin) > oneHourAgo) {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'Check-in not allowed within one hour of the last check-in.',
-        });
-      }
+    if (!user) {
+      throw new Error('UserEntity not found');
     }
 
-    const now = new Date();
+    // Generate a secure token
+    const resetToken = randomBytes(32).toString('hex');
+    const tokenExpiry = addMinutes(new Date(), 30); // Token expires in 30 minutes
 
-    participant.checkInDates.push(now);
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = tokenExpiry;
 
-    await participant.save();
+    await this.userRepository.save(user);
 
-    return participant;
+    return resetToken;
   }
 
-  async checkoutParticipant(participantCheckoutDto: ParticipantCheckoutDto) {
-    const participant = await this.userModel.findById(
-      participantCheckoutDto.id,
-    );
+  async validateResetToken(email: string, token: string): Promise<boolean> {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+      select: ['id', 'resetPasswordToken', 'resetPasswordExpires'],
+    });
 
-    if (!participant) throw new Error('No user found');
+    if (
+      !user ||
+      !user.resetPasswordExpires ||
+      new Date() > user.resetPasswordExpires ||
+      token !== user.resetPasswordToken
+    ) {
+      return false;
+    }
 
-    const now = new Date();
-
-    participant.checkOutDates.push(now);
-
-    await participant.save();
-
-    return participant;
+    return true;
   }
 
-  async findOne(): Promise<User> {
-    return await this.userModel.findOne();
+  async updatePassword(
+    token: string,
+    email: string,
+    newPassword: string,
+  ): Promise<void> {
+    const user = await this.findOneByEmail(email);
+    console.log('🚀 ~ UserService ~ user:', user);
+
+    if (!(await this.validateResetToken(email, token))) {
+      throw new Error('Token is invalid.');
+    }
+
+    const salt = await bcrypt.genSalt(10);
+
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = null; // Remove the reset token
+    user.resetPasswordExpires = null; // Clear the expiry
+
+    await this.userRepository.save(user);
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
-    return await this.userModel.findOne({ email });
+  async sendResetPasswordEmail(email: string, resetToken: string) {
+    const resetLink = `https://localhost:3000/reset-password?token=${resetToken}?email=${email}`;
+
+    const htmlContent = renderTemplate('reset-password-email.hbs', {
+      resetLink,
+    });
+
+    (async function () {
+      const { data, error } = await resend.emails.send({
+        from: 'Express holiday <onboarding@artican.org>',
+        to: email,
+        subject: 'Reset password express holiday',
+        html: htmlContent,
+      });
+
+      if (error) {
+        return console.error({ error });
+      }
+
+      console.log({ data });
+    })();
   }
 
-  async findOneById(id: string): Promise<User | null> {
-    return await this.userModel.findById(id);
+  // async findValidateToken(token: string) {
+  //   const user = await this.userRepository.findOne({
+  //     where: { resetPasswordToken: token },
+  //     select: ['resetPasswordToken', 'resetPasswordExpires'],
+  //   });
+
+  //   if (
+  //     !user ||
+  //     !user.resetPasswordExpires ||
+  //     new Date() > user.resetPasswordExpires ||
+  //     token !== user.resetPasswordToken
+  //   ) {
+  //     return false;
+  //   }
+
+  //   return true;
+  // }
+
+  async findOneByEmail(email: string): Promise<UserEntity | null> {
+    return await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
   }
 
-  async loginUser(email: string, password: string): Promise<User | null> {
+  async findOneById(id: string): Promise<UserEntity | null> {
+    return await this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  async loginUser(email: string, password: string): Promise<UserEntity | null> {
     try {
-      const user = await this.userModel.findOne({ email });
+      const user = await this.userRepository.findOne({ where: { email } });
       if (!user) return null;
 
       const isPasswordValid = await compare(password, user.password);
 
       if (!isPasswordValid) throw new Error('Invalid password');
 
-      return user.toJSON() as User;
+      return user;
     } catch (error) {
       throw error;
     }
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     try {
-      return await this.userModel.find().exec();
+      return await this.userRepository.find();
     } catch (error) {
       throw error;
     }
   }
 
-  async findAllParticipants(participant_status: string): Promise<User[]> {
-    try {
-      return await this.userModel
-        .find({
-          role: 'participant',
-          status: participant_status,
-        })
-        .exec();
-    } catch (error) {
-      throw error;
-    }
+  async findOneAndUpdate(userId: string, toUpdate: Partial<UserEntity>) {
+    await this.userRepository.update(userId, toUpdate);
+    return await this.userRepository.findOne({ where: { id: userId } });
   }
 
-  async findOneAndUpdate(userId, toUpdate) {
-    return await this.userModel.findByIdAndUpdate(userId, toUpdate);
-  }
-
-  async findAllByQuery(queryText: string): Promise<User[]> {
+  async findAllByQuery(queryText: string): Promise<UserEntity[]> {
     try {
-      const query = {
-        $or: [
-          { name: new RegExp(queryText, 'i') },
-          { contactNumber: new RegExp(queryText, 'i') },
-          { email: new RegExp(queryText, 'i') },
-        ],
-      };
-      return await this.userModel.find(query).exec();
+      const query = [
+        { first_name: Like(`%${queryText}%`) },
+        { last_name: Like(`%${queryText}%`) },
+        { contactNumber: Like(`%${queryText}%`) },
+        { email: Like(`%${queryText}%`) },
+      ];
+      return await this.userRepository.find({ where: query });
     } catch (error) {
       throw new Error('Failed to fetch users by query: ' + error);
     }

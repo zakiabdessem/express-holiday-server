@@ -1,21 +1,28 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { UserModule } from './user/user.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
-import { TeamModule } from './team/team.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { GqlThrottlerGuard } from './guard/throttle.guard';
+import { TicketModule } from './ticket/ticket.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import typeorm from './config/typeorm';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [typeorm],
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
+    }),
     forwardRef(() =>
       GraphQLModule.forRoot<ApolloDriverConfig>({
         driver: ApolloDriver,
@@ -26,7 +33,7 @@ import { GqlThrottlerGuard } from './guard/throttle.guard';
       }),
     ),
     UserModule,
-    TeamModule,
+    TicketModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
@@ -44,6 +51,7 @@ import { GqlThrottlerGuard } from './guard/throttle.guard';
         limit: 100,
       },
     ]),
+    CategoryModule
   ],
   controllers: [],
   providers: [

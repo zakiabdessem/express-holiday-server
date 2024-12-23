@@ -59,6 +59,7 @@ export class GQLRolesGuard implements CanActivate {
    */
   private getTokenFromHeader(req: any): string | null {
     const authHeader = req.headers.authorization || '';
+    console.log("🚀 ~ GQLRolesGuard ~ getTokenFromHeader ~ authHeader:", authHeader)
     if (authHeader.startsWith('Bearer ')) {
       return authHeader.substring(7); // Remove "Bearer " from the start of the string
     }

@@ -1,107 +1,55 @@
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { registerEnumType } from '@nestjs/graphql';
 import { UserRole } from 'src/decorator/role.entity';
 
+registerEnumType(UserRole, {
+  name: 'UserRole',
+});
+
 @ObjectType()
-@Schema({ timestamps: true })
-export class User {
-  @Field(() => ID, { nullable: true })
-  _id?: string;
+@Entity({
+  name: 'users',
+})
+export class UserEntity extends BaseEntity {
+  @Field(() => ID)
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Field()
-  @Prop({ required: true, unique: true })
+  @Column({ unique: true })
   email: string;
 
-  @Prop({ required: false })
+  @Column()
   password: string;
 
   @Field()
-  @Prop({ required: true })
-  name: string;
+  @Column()
+  first_name: string;
 
-  @Field(() => String, { nullable: true })
-  @Prop({
-    type: String,
-  })
-  tShirtSize?: string;
+  @Field()
+  @Column()
+  last_name: string;
 
-  @Field(() => String, { nullable: true })
-  @Prop()
+  @Column({ nullable: true })
+  resetPasswordToken?: string;
+
+  @Column('timestamp', { nullable: true })
+  resetPasswordExpires?: Date;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   profilePicture?: string;
 
-  @Field(() => String, { nullable: true })
-  @Prop()
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   contactNumber?: string;
 
-  @Field(() => String, { nullable: true })
-  @Prop()
-  discordUsername?: string;
-
-  @Field(() => [String], { nullable: true })
-  @Prop({ type: [String] })
-  skills?: string[];
-
-  @Field(() => String, { nullable: true })
-  @Prop({ type: String })
-  motivation?: string;
-
-  @Field(() => String, { nullable: true })
-  @Prop({ type: String })
-  teamName?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  @Prop({ type: Boolean })
-  hasTeam?: boolean;
-
-  @Field()
-  @Prop({
-    type: String,
+  @Field(() => UserRole)
+  @Column({
+    type: 'enum',
     enum: UserRole,
-    default: UserRole.PARTICIPANT,
+    default: UserRole.CLIENT,
   })
   role: UserRole;
-
-  @Field()
-  @Prop({
-    type: String,
-  })
-  github?: string;
-
-  @Field()
-  @Prop({
-    type: String,
-  })
-  linkedin?: string;
-
-  @Field()
-  @Prop({
-    type: String,
-  })
-  portfolio?: string;
-
-  @Field(() => Number, { defaultValue: 0 })
-  @Prop({
-    type: Number,
-    default: 0,
-  })
-  points: number;
-
-  //status filed
-  @Field(() => String, { nullable: true })
-  @Prop({
-    type: String,
-    enum: ['pending', 'accepted', 'rejected'],
-    default: 'pending',
-  })
-  status?: 'pending' | 'accepted' | 'rejected';
-
-  @Field(() => [Date], { nullable: true })
-  @Prop({ type: [Date], default: [] })
-  checkInDates?: Date[];
-
-  @Field(() => [Date], { nullable: true })
-  @Prop({ type: [Date], default: [] })
-  checkOutDates?: Date[];
 }
-
-export const UserSchema = SchemaFactory.createForClass(User);
