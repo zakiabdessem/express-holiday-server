@@ -54,10 +54,6 @@ export class UserCreateDto {
   @IsMobilePhone('ar-DZ')
   contactNumber: string;
 
-  @ApiProperty({
-    example: 'role',
-    description: 'ADMIN = "admin", CLIENT = "client"',
-  })
   @IsOptional()
   @IsEnum(UserRole)
   role?: UserRole;
