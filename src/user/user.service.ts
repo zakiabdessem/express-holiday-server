@@ -25,7 +25,7 @@ export class UserService {
   async createUserClient(createUserDto: UserCreateDto): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
       where: {
-        email: createUserDto.email,
+        email: createUserDto.email.toLowerCase(),
       },
     });
     if (user) {
@@ -46,7 +46,7 @@ export class UserService {
 
   async createUserAdmin(createUserDto: UserCreateDto): Promise<UserEntity> {
     const user = await this.userRepository.findOne({
-      where: { email: createUserDto.email },
+      where: { email: createUserDto.email.toLowerCase() },
     });
     if (user) {
       throw new Error('UserEntity already exists');
@@ -86,7 +86,7 @@ export class UserService {
 
   async validateResetToken(email: string, token: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
-      where: { email: email },
+      where: { email: email.toLowerCase() },
       select: ['id', 'resetPasswordToken', 'resetPasswordExpires'],
     });
 
@@ -184,7 +184,7 @@ export class UserService {
 
   async loginUser(email: string, password: string): Promise<UserEntity | null> {
     try {
-      const user = await this.userRepository.findOne({ where: { email } });
+      const user = await this.userRepository.findOne({ where: { email: email.toLowerCase() } });
       if (!user) return null;
 
       const isPasswordValid = await compare(password, user.password);

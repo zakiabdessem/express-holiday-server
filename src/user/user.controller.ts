@@ -140,7 +140,7 @@ export class UserController {
       Logger.error(error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: 'Internal server error',
+        message: error.message || 'Internal server error',
       });
     }
   }
