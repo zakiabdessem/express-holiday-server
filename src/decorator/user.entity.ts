@@ -1,6 +1,12 @@
-import { createParamDecorator, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  HttpException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { verify } from 'jsonwebtoken';
+import { UserEntity } from 'src/user/user.schema';
 
 const getTokenFromHeader = (req: any): string | null => {
   const authHeader = req.headers.authorization || '';
@@ -8,19 +14,39 @@ const getTokenFromHeader = (req: any): string | null => {
     return authHeader.substring(7); // Remove "Bearer " from the start of the string
   }
   return null;
-}
+};
 
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const gqlContext = GqlExecutionContext.create(ctx).getContext();
     const req = gqlContext.req;
-    const token = req.cookies.jwt || getTokenFromHeader(req);
 
-    if (!token) {
-      throw new UnauthorizedException('No authentication token provided.');
+    const refresh_token = req.cookies.refresh_token;
+
+    if (!refresh_token) {
+      throw new HttpException(
+        {
+          message: 'No Refresh token found.',
+          customCode: 'REFRESH_TOKEN_MISSING',
+        },
+        401,
+      );
     }
 
-    const user = verify(token, process.env.SECRET);
+    const access_token = req.cookies.access_token;
+
+    if (!access_token) {
+      throw new HttpException(
+        {
+          message: 'No Access token found.',
+          customCode: 'ACCESS_TOKEN_MISSING',
+        },
+        401,
+      );
+    }
+
+    const user = verify(access_token, process.env.SECRET) as UserEntity;
+
     return user;
   },
 );
