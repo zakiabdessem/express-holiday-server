@@ -78,24 +78,52 @@ export class UserController {
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
           .json({ message: 'Invalid credentials' });
 
-      const token = await sign(
+      const refresh_token = sign(
         {
           id: user.id,
           email: user.email,
           first_name: user.first_name,
           last_name: user.last_name,
           role: user.role,
+          refresh: true,
         },
         process.env.SECRET,
+        {
+          expiresIn: '7d',
+        },
       );
+
+      const access_token = sign(
+        {
+          id: user.id,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role: user.role,
+          access: true,
+        },
+        process.env.SECRET,
+        {
+          expiresIn: '1h',
+        },
+      );
+
       delete user.password;
 
       return res
-        .cookie('jwt', token, cookieConfig())
+        .cookie(
+          'refresh_token',
+          refresh_token,
+          cookieConfig(new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)),
+        )
+        .cookie(
+          'access_token',
+          access_token,
+          cookieConfig(new Date(Date.now() + 60 * 60 * 1000)),
+        )
         .status(HttpStatus.OK)
         .json({
           message: 'Auth Success',
-          token,
           user: {
             id: user.id,
             email: user.email,

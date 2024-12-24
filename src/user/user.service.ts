@@ -108,7 +108,6 @@ export class UserService {
     newPassword: string,
   ): Promise<void> {
     const user = await this.findOneByEmail(email);
-    console.log('🚀 ~ UserService ~ user:', user);
 
     if (!(await this.validateResetToken(email, token))) {
       throw new Error('Token is invalid.');

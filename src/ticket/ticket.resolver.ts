@@ -13,7 +13,6 @@ export class TicketResolver {
 
   @SkipThrottle()
   @Query(() => [Ticket])
-
   async tickets() {
     return this.ticketService.findAll();
   }

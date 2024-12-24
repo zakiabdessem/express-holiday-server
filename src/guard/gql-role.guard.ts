@@ -27,13 +27,18 @@ export class GQLRolesGuard implements CanActivate {
       const req = gqlContext.req;
 
       // Now check for the token in both cookies and headers
-      const token = req.cookies.jwt || this.getTokenFromHeader(req);
+      const refresh_token = req.cookies.refresh_token; // || this.getTokenFromHeader(req); MOBILE DEV
 
-      if (!token) {
-        throw new UnauthorizedException('No authentication token provided.');
+      if (!refresh_token) {
+        throw new UnauthorizedException('No Refresh token found.');
       }
 
-      const user = verify(token, process.env.SECRET);
+      const access_token = req.cookies.access_token;
+
+      const user = verify(access_token, process.env.SECRET);
+
+      if (!access_token || !user.access_token)
+        throw new UnauthorizedException('No Access token found.');
 
       if (!user || !user.role)
         throw new UnauthorizedException('No roles found for the user.');
@@ -41,6 +46,7 @@ export class GQLRolesGuard implements CanActivate {
       if (user.role === UserRole.ADMIN) return true;
 
       const hasRole = requiredRoles.includes(user.role);
+
       if (!hasRole)
         throw new UnauthorizedException(
           'User does not have the required roles.',
@@ -59,7 +65,10 @@ export class GQLRolesGuard implements CanActivate {
    */
   private getTokenFromHeader(req: any): string | null {
     const authHeader = req.headers.authorization || '';
-    console.log("🚀 ~ GQLRolesGuard ~ getTokenFromHeader ~ authHeader:", authHeader)
+    console.log(
+      '🚀 ~ GQLRolesGuard ~ getTokenFromHeader ~ authHeader:',
+      authHeader,
+    );
     if (authHeader.startsWith('Bearer ')) {
       return authHeader.substring(7); // Remove "Bearer " from the start of the string
     }

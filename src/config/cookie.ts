@@ -1,4 +1,4 @@
-export default function cookieConfig() {
+export default function cookieConfig(expires: Date) {
   return {
     httpOnly: true,
     sameSite: 'strict' as const,
@@ -7,5 +7,6 @@ export default function cookieConfig() {
       process.env.NODE_ENV === 'production'
         ? `.${process.env.COOKIE_URL}`
         : 'localhost', // use 'localhost' as domain in development
+    expires,
   };
 }
