@@ -6,6 +6,7 @@ import {
   HttpStatus,
   UseGuards,
   Get,
+  UseFilters,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -13,8 +14,10 @@ import { CategoryService } from './category.service';
 import { GQLRolesGuard } from 'src/guard/gql-role.guard';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserRole } from 'src/decorator/role.entity';
+import { AuthExceptionFilter } from 'src/filter/auth-exception.filter';
 
 @Controller('category')
+@UseFilters(new AuthExceptionFilter())
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

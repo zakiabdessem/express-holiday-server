@@ -2,13 +2,14 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  UnauthorizedException,
+  HttpException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { UserRole } from 'src/decorator/role.entity';
 import { ROLES_KEY } from 'src/decorator/roles.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { verify } from 'jsonwebtoken';
+import { UserEntity } from 'src/user/user.schema';
 
 @Injectable()
 export class GQLRolesGuard implements CanActivate {
@@ -26,52 +27,65 @@ export class GQLRolesGuard implements CanActivate {
       const gqlContext = GqlExecutionContext.create(context).getContext();
       const req = gqlContext.req;
 
-      // Now check for the token in both cookies and headers
-      const refresh_token = req.cookies.refresh_token; // || this.getTokenFromHeader(req); MOBILE DEV
+      const refresh_token = req.cookies.refresh_token;
 
       if (!refresh_token) {
-        throw new UnauthorizedException('No Refresh token found.');
+        throw new HttpException(
+          {
+            message: 'No Refresh token found.',
+            customCode: 'REFRESH_TOKEN_MISSING',
+          },
+          401,
+        );
       }
 
       const access_token = req.cookies.access_token;
 
-      const user = verify(access_token, process.env.SECRET);
+      if (!access_token) {
+        throw new HttpException(
+          {
+            message: 'No Access token found.',
+            customCode: 'ACCESS_TOKEN_MISSING',
+          },
+          401,
+        );
+      }
 
-      if (!access_token || !user.access_token)
-        throw new UnauthorizedException('No Access token found.');
+      const user = verify(access_token, process.env.SECRET) as UserEntity;
 
-      if (!user || !user.role)
-        throw new UnauthorizedException('No roles found for the user.');
+      if (!user || !user.role) {
+        throw new HttpException(
+          {
+            message: 'No roles found for the user.',
+            customCode: 'ROLE_MISSING',
+          },
+          403,
+        );
+      }
 
       if (user.role === UserRole.ADMIN) return true;
 
       const hasRole = requiredRoles.includes(user.role);
 
-      if (!hasRole)
-        throw new UnauthorizedException(
-          'User does not have the required roles.',
+      if (!hasRole) {
+        throw new HttpException(
+          {
+            message: 'User does not have the required roles.',
+            customCode: 'ROLE_UNAUTHORIZED',
+          },
+          403,
         );
+      }
 
       return true;
     } catch (error) {
-      return false;
+      throw new HttpException(
+        {
+          message: error.message || 'Invalid token',
+          customCode: 'TOKEN_INVALID',
+        },
+        401,
+      );
     }
-  }
-
-  /**
-   * Extracts the JWT token from the Authorization header.
-   * @param req - The request object
-   * @returns The token or null if no token is found
-   */
-  private getTokenFromHeader(req: any): string | null {
-    const authHeader = req.headers.authorization || '';
-    console.log(
-      '🚀 ~ GQLRolesGuard ~ getTokenFromHeader ~ authHeader:',
-      authHeader,
-    );
-    if (authHeader.startsWith('Bearer ')) {
-      return authHeader.substring(7); // Remove "Bearer " from the start of the string
-    }
-    return null;
   }
 }

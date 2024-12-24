@@ -9,6 +9,7 @@ import {
   Logger,
   Put,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { UserCreateDto } from './dtos/user-create.dto';
 import { Request, Response } from 'express';
@@ -22,8 +23,10 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { CurrentUser } from 'src/decorator/user.entity';
 import { UserEntity } from './user.schema';
 import { ResetPasswordDto } from './dtos/resetpassword.dto';
+import { AuthExceptionFilter } from 'src/filter/auth-exception.filter';
 
 @Controller('user')
+@UseFilters(new AuthExceptionFilter())
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

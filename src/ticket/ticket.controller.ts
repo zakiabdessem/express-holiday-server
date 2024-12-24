@@ -5,6 +5,7 @@ import {
   Res,
   HttpStatus,
   UseGuards,
+  UseFilters,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -13,8 +14,10 @@ import { TicketService } from './ticket.service';
 import { GQLRolesGuard } from 'src/guard/gql-role.guard';
 import { Roles } from 'src/decorator/roles.decorator';
 import { UserRole } from 'src/decorator/role.entity';
+import { AuthExceptionFilter } from 'src/filter/auth-exception.filter';
 
 @Controller('ticket')
+@UseFilters(new AuthExceptionFilter())
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
