@@ -17,11 +17,11 @@ export class TicketResolver {
     return this.ticketService.findAll();
   }
 
-  @SkipThrottle()
-  @Query(() => [Ticket])
-  @Roles(UserRole.ADMIN)
-  @UseGuards(GQLRolesGuard)
-  async ticketsByQuery(@Args('query') query: string) {
-    return this.ticketService.findAllByQuery(query);
-  }
+  // @SkipThrottle()
+  // @Query(() => [Ticket])
+  // @Roles(UserRole.ADMIN)
+  // @UseGuards(GQLRolesGuard)
+  // async ticketsByQuery(@Args('query') query: string) {
+  //   return this.ticketService.findAllByQuery(query);
+  // }
 }

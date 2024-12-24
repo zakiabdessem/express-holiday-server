@@ -21,7 +21,4 @@ export class Subcategory {
 
   @ManyToOne(() => Category, (category) => category.subcategories)
   category: Category;
-
-  @OneToMany(() => Ticket, (ticket) => ticket.subcategory)
-  tickets: Ticket[];
 }

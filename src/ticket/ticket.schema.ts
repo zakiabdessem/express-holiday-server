@@ -45,10 +45,6 @@ export class Ticket {
   @Column()
   categoryId: number;
 
-  @Field(() => Category)
-  @ManyToOne(() => Subcategory, (subcategory) => subcategory.tickets)
-  subcategory: Category;
-
   @Field()
   @Column()
   subcategoryId: number;

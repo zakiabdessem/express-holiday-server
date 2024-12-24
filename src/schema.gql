@@ -7,23 +7,38 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Passenger {
+  firstName: String!
+  lastName: String!
+  ticket: Ticket!
+  ticketNumber: String!
+}
+
 type Query {
   tickets: [Ticket!]!
-  ticketsByQuery(query: String!): [Ticket!]!
   users: [UserEntity!]!
   usersByQuery(query: String!): [UserEntity!]!
 }
 
 type Ticket {
-  category: String!
-  description: String!
-  first_name: String!
+  categoryId: Float!
+  description: String
   id: ID!
-  last_name: String!
   last_reply: DateTime
+  passengers: [Passenger]
   pnr: String
-  reason: String
+  priority: TicketPriority!
+  refundReason: String
   status: String!
+  subcategoryId: Float!
+  subject: String
+}
+
+enum TicketPriority {
+  HIGH
+  LOW
+  MEDIUM
+  URGENT
 }
 
 type UserEntity {
