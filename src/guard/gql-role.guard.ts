@@ -27,19 +27,8 @@ export class GQLRolesGuard implements CanActivate {
       const gqlContext = GqlExecutionContext.create(context).getContext();
       const req = gqlContext.req;
 
-      const refresh_token = req.cookies.refresh_token;
-
-      if (!refresh_token) {
-        throw new HttpException(
-          {
-            message: 'No Refresh token found.',
-            customCode: 'REFRESH_TOKEN_MISSING',
-          },
-          401,
-        );
-      }
-
-      const access_token = req.cookies.access_token;
+      const access_token =
+        req.cookies.access_token || this.getTokenFromHeader(req);
 
       if (!access_token) {
         throw new HttpException(
@@ -88,4 +77,21 @@ export class GQLRolesGuard implements CanActivate {
       );
     }
   }
+
+  
+  /**
+   * Extracts the JWT token from the Authorization header.
+   * @param req - The request object
+   * @returns The token or null if no token is found
+   */
+  private getTokenFromHeader(req: any): string | null {
+    const authHeader = req.headers.authorization || '';
+    if (authHeader.startsWith('Bearer ')) {
+      return authHeader.substring(7); // Remove "Bearer " from the start of the string
+    }
+    return null;
+  }
 }
+
+
+

@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { TicketCreateDto } from './dtos/ticket-create.dto';
+import { TicketBillet1CreateDto } from './dtos/ticket-create-airline.dto';
 import { TicketService } from './ticket.service';
 import { GQLRolesGuard } from 'src/guard/gql-role.guard';
 import { Roles } from 'src/decorator/roles.decorator';
@@ -25,11 +25,11 @@ export class TicketController {
   @Roles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(GQLRolesGuard)
   async create(
-    @Body() createTicketrDto: TicketCreateDto,
+    @Body() createTicketDto: TicketBillet1CreateDto,
     @Res() res: Response,
   ) {
     try {
-      await this.ticketService.createTicketClient(createTicketrDto);
+      await this.ticketService.createTicketBillet1Client(createTicketDto);
 
       return res.status(HttpStatus.OK).json({
         message: 'Ticket created successfully',

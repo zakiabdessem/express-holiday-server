@@ -4,14 +4,23 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Category } from 'src/category/category.schema';
+import { Subcategory } from 'src/category/subcategory.schema';
+import { TicketPriority } from './dtos/ticket-create-airline.dto';
 
 enum TicketStatus {
   INPROGRESS = 'inprogress',
   CLOSED = 'closed',
   OPEN = 'open',
 }
+
+registerEnumType(TicketPriority, {
+  name: 'TicketPriority',
+});
 
 @ObjectType()
 @Entity('tickets')
@@ -34,27 +43,76 @@ export class Ticket {
 
   @Field()
   @Column()
-  category: string;
+  categoryId: number;
+
+  @Field(() => Category)
+  @ManyToOne(() => Subcategory, (subcategory) => subcategory.tickets)
+  subcategory: Category;
 
   @Field()
   @Column()
-  description: string;
-
-  @Field()
-  @Column()
-  first_name: string;
-
-  @Field()
-  @Column()
-  last_name: string;
+  subcategoryId: number;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  reason?: string;
+  description?: string;
+
+  @Field(() => TicketPriority)
+  @Column({
+    type: 'enum',
+    enum: TicketPriority,
+    default: TicketPriority.LOW,
+  })
+  priority: TicketPriority;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  subject?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  refundReason?: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
   pnr?: string;
+
+  @Field(() => [Passenger], { nullable: 'itemsAndList' })
+  @OneToMany(() => Passenger, (passenger) => passenger.ticket, {
+    cascade: true,
+  })
+  passengers?: Passenger[];
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+}
+
+@ObjectType()
+@Entity('passengers')
+export class Passenger {
+  @PrimaryGeneratedColumn('increment')
+  id: number;
+
+  @Field()
+  @Column()
+  firstName: string;
+
+  @Field()
+  @Column()
+  lastName: string;
+
+  @Field()
+  @Column()
+  ticketNumber: string;
+
+  @Field(() => Ticket)
+  @ManyToOne(() => Ticket, (ticket) => ticket.passengers, {
+    onDelete: 'CASCADE',
+  })
+  ticket: Ticket;
 
   @CreateDateColumn()
   createdAt?: Date;

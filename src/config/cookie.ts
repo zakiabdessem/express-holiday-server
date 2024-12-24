@@ -6,7 +6,7 @@ export default function cookieConfig(expires: Date) {
     domain:
       process.env.NODE_ENV === 'production'
         ? `.${process.env.COOKIE_URL}`
-        : 'localhost', // use 'localhost' as domain in development
+        : process.env.COOKIE_URL || 'localhost', // use backend URL or 'localhost' as domain in development
     expires,
   };
 }

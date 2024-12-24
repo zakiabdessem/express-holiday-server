@@ -21,7 +21,7 @@ export const CurrentUser = createParamDecorator(
     const gqlContext = GqlExecutionContext.create(ctx).getContext();
     const req = gqlContext.req;
 
-    const refresh_token = req.cookies.refresh_token;
+    const refresh_token = req.cookies.refresh_token || getTokenFromHeader(req);
 
     if (!refresh_token) {
       throw new HttpException(
@@ -33,19 +33,7 @@ export const CurrentUser = createParamDecorator(
       );
     }
 
-    const access_token = req.cookies.access_token;
-
-    if (!access_token) {
-      throw new HttpException(
-        {
-          message: 'No Access token found.',
-          customCode: 'ACCESS_TOKEN_MISSING',
-        },
-        401,
-      );
-    }
-
-    const user = verify(access_token, process.env.SECRET) as UserEntity;
+    const user = verify(refresh_token, process.env.SECRET) as UserEntity;
 
     return user;
   },

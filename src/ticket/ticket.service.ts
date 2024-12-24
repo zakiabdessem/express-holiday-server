@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TicketCreateDto } from './dtos/ticket-create.dto';
+import { DeepPartial, Repository } from 'typeorm';
 import { Ticket } from './ticket.schema';
+import { TicketBillet1CreateDto } from './dtos/ticket-create-airline.dto';
 
 @Injectable()
 export class TicketService {
@@ -12,8 +12,8 @@ export class TicketService {
   ) {}
 
   // Implement the methods using TypeORM
-  async createTicketClient(createTicketDto: TicketCreateDto): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(createTicketDto);
+  async createTicketBillet1Client(createTicketDto: TicketBillet1CreateDto): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(createTicketDto as DeepPartial<Ticket>);
     return await this.ticketRepository.save(ticket);
   }
 
@@ -53,13 +53,13 @@ export class TicketService {
     return null;
   }
 
-  async findAllByQuery(queryText: string): Promise<Ticket[]> {
-    return this.ticketRepository.find({
-      where: [
-        { first_name: queryText },
-        { last_name: queryText },
-        { pnr: queryText },
-      ],
-    });
-  }
+  // async findAllByQuery(queryText: string): Promise<Ticket[]> {
+  //   return this.ticketRepository.find({
+  //     where: [
+  //       { first_name: queryText },
+  //       { last_name: queryText },
+  //       { pnr: queryText },
+  //     ],
+  //   });
+  // }
 }

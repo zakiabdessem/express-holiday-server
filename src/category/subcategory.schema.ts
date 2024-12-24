@@ -1,5 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Category } from './category.schema';
+import { Ticket } from 'src/ticket/ticket.schema';
 
 @Entity('subcategories')
 export class Subcategory {
@@ -14,4 +21,7 @@ export class Subcategory {
 
   @ManyToOne(() => Category, (category) => category.subcategories)
   category: Category;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.subcategory)
+  tickets: Ticket[];
 }

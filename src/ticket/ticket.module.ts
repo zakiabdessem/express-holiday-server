@@ -4,14 +4,14 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { Ticket } from './ticket.schema';
+import { Passenger, Ticket } from './ticket.schema';
 import { TicketController } from './ticket.controller';
 import { TicketResolver } from './ticket.resolver';
 import { TicketService } from './ticket.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket])],
+  imports: [TypeOrmModule.forFeature([Ticket, Passenger])],
   controllers: [TicketController],
   providers: [TicketService, TicketResolver],
   exports: [],
