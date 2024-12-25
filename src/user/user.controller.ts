@@ -23,10 +23,10 @@ import { SkipThrottle } from '@nestjs/throttler';
 import { CurrentUser } from 'src/decorator/user.entity';
 import { UserEntity } from './user.schema';
 import { ResetPasswordDto } from './dtos/resetpassword.dto';
-import { AuthExceptionFilter } from 'src/filter/auth-exception.filter';
+import { ErrorExceptionFilter } from 'src/filter/auth-exception.filter';
 
 @Controller('user')
-@UseFilters(new AuthExceptionFilter())
+@UseFilters(new ErrorExceptionFilter())
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

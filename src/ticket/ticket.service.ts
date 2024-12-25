@@ -12,8 +12,23 @@ export class TicketService {
   ) {}
 
   // Implement the methods using TypeORM
-  async createTicketBillet1Client(createTicketDto: TicketBillet1CreateDto): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(createTicketDto as DeepPartial<Ticket>);
+  async createTicketBillet1Client(
+    createTicketDto: TicketBillet1CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+ 
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketBillet2Client(
+    createTicketDto: TicketBillet1CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
     return await this.ticketRepository.save(ticket);
   }
 

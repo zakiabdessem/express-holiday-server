@@ -2,7 +2,6 @@ import {
   MiddlewareConsumer,
   Module,
   NestModule,
-  RequestMethod,
 } from '@nestjs/common';
 import { Passenger, Ticket } from './ticket.schema';
 import { TicketController } from './ticket.controller';

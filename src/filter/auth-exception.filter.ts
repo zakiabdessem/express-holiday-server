@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 
 @Catch(HttpException)
-export class AuthExceptionFilter implements ExceptionFilter {
+export class ErrorExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();

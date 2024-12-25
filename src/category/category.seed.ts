@@ -13,19 +13,19 @@ export class CategorySeeder {
         subcategories: [
           {
             nameFr: 'Demande / Réclamation D’un Billet',
-            nameEn: 'Request / Claim For A Ticket',
+            nameEn: 'Request / Claim For A Ticket (1)',
           },
           {
             nameFr: "Demande De Remboursement D'un Billet",
-            nameEn: 'Ticket Refund Request',
+            nameEn: 'Ticket Refund Request (2)',
           },
           {
             nameFr: "Demande De Modification D'un Billet",
-            nameEn: 'Ticket Modification Request',
+            nameEn: 'Ticket Modification Request (3)',
           },
           {
             nameFr: "Demande De Confirmation D'un Billet",
-            nameEn: 'Ticket Confirmation Request',
+            nameEn: 'Ticket Confirmation Request (4)',
           },
           {
             nameFr: 'Demande De Connexion RTS',
@@ -106,9 +106,7 @@ export class CategorySeeder {
       },
       {
         name: 'Service technique',
-        subcategories: [
-          { nameFr: 'Aucune', nameEn: 'None' },
-        ],
+        subcategories: [{ nameFr: 'Aucune', nameEn: 'None' }],
       },
       {
         name: 'Visa department',

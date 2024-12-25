@@ -1,12 +1,8 @@
-import { ObjectType } from '@nestjs/graphql';
-import { Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
   IsArray,
   IsEnum,
-  isEnum,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   MaxLength,
   MinLength,
@@ -28,18 +24,7 @@ export enum TicketPriority {
   MEDIUM = 'medium',
 }
 
-@ObjectType()
-@Schema({ timestamps: true })
 export class TicketBillet1CreateDto {
-  @ApiProperty({
-    example: '1',
-    description: 'Category of the ticket',
-    required: true,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  category: number;
-
   @ApiProperty({
     example: '2',
     description: 'Subcategory of the ticket',
@@ -84,18 +69,7 @@ export class TicketBillet1CreateDto {
   subject: string;
 }
 
-@ObjectType()
-@Schema({ timestamps: true })
 export class TicketBillet2CreateDto {
-  @ApiProperty({
-    example: '1',
-    description: 'Category of the ticket',
-    required: true,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  category: number;
-
   @ApiProperty({
     example: '2',
     description: 'Subcategory of the ticket',
@@ -143,8 +117,6 @@ export class TicketBillet2CreateDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PassengerDetailsDto) // Nested DTO for passenger details
-  @MinLength(1)
-  @MaxLength(99)
   passengers: PassengerDetailsDto[];
 
   @ApiProperty({
@@ -159,6 +131,14 @@ export class TicketBillet2CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+}
+
+export class TicketCreateDtoApi {
+  @ApiProperty({ type: TicketBillet1CreateDto, required: false })
+  'Request / Claim For A Ticket'?: TicketBillet1CreateDto;
+
+  @ApiProperty({ type: TicketBillet2CreateDto, required: false })
+  'Ticket Refund Request'?: TicketBillet2CreateDto;
 }
 
 export class PassengerDetailsDto {
