@@ -2,7 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Ticket } from './ticket.schema';
-import { TicketBillet1CreateDto } from './dtos/ticket-create-airline.dto';
+import {
+  TicketBillet1CreateDto,
+  TicketBillet3CreateDto,
+  TicketBillet4CreateDto,
+  TicketBillet5CreateDto,
+  TicketBillet6CreateDto,
+} from './dtos/ticket-create-airline.dto';
 
 @Injectable()
 export class TicketService {
@@ -18,12 +24,53 @@ export class TicketService {
     const ticket = this.ticketRepository.create(
       createTicketDto as DeepPartial<Ticket>,
     );
- 
+
     return await this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet2Client(
     createTicketDto: TicketBillet1CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketBillet3Client(
+    createTicketDto: TicketBillet3CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketBillet4Client(
+    createTicketDto: TicketBillet4CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create({
+      passengers: [createTicketDto.passenger],
+      ...createTicketDto,
+    } as DeepPartial<Ticket>);
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketBillet5Client(
+    createTicketDto: TicketBillet5CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketBillet6Client(
+    createTicketDto: TicketBillet6CreateDto,
   ): Promise<Ticket> {
     const ticket = this.ticketRepository.create(
       createTicketDto as DeepPartial<Ticket>,

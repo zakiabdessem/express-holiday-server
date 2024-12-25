@@ -54,7 +54,6 @@ export class CategoryController {
 
       return res.status(HttpStatus.OK).json({ subcategories });
     } catch (error) {
-      console.log('🚀 ~ CategoryController ~ subcategories ~ error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',

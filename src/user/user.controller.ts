@@ -39,7 +39,6 @@ export class UserController {
         message: 'Vous avez enregistré avec succès.',
       });
     } catch (error) {
-      console.log('🚀 ~ UserController ~ register ~ error:', error);
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message || 'Internal server error',
@@ -226,7 +225,6 @@ export class UserController {
   async forgetPassword(@Body('email') email: string, @Res() res: Response) {
     try {
       const user = await this.userService.findOneByEmail(email);
-      console.log('🚀 ~ UserController ~ forgetPassword ~ user:', user);
       if (!user) {
         return res
           .status(HttpStatus.NOT_FOUND)

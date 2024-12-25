@@ -11,7 +11,7 @@ type Passenger {
   firstName: String!
   lastName: String!
   ticket: Ticket!
-  ticketNumber: String!
+  ticketNumber: String
 }
 
 type Query {
@@ -22,9 +22,13 @@ type Query {
 
 type Ticket {
   categoryId: Float!
+  changeReason: String
+  datesAndItineraries: [String!]
   description: String
+  estimatedTickets: Float
   id: ID!
   last_reply: DateTime
+  officeId: Float
   passengers: [Passenger]
   pnr: String
   priority: TicketPriority!

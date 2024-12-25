@@ -71,6 +71,14 @@ export class Ticket {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
+  changeReason?: string;
+
+  @Field(() => [String], { nullable: true })
+  @Column('simple-array', { nullable: true })
+  datesAndItineraries?: string[];
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
   pnr?: string;
 
   @Field(() => [Passenger], { nullable: 'itemsAndList' })
@@ -78,6 +86,22 @@ export class Ticket {
     cascade: true,
   })
   passengers?: Passenger[];
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  estimatedTickets?: number;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  officeId?: number;
 
   @CreateDateColumn()
   createdAt?: Date;
@@ -100,9 +124,13 @@ export class Passenger {
   @Column()
   lastName: string;
 
-  @Field()
-  @Column()
-  ticketNumber: string;
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  ticketNumber: string; //NOT TICKET OF RELATION
 
   @Field(() => Ticket)
   @ManyToOne(() => Ticket, (ticket) => ticket.passengers, {
