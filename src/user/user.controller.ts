@@ -10,10 +10,11 @@ import {
   Put,
   UseGuards,
   UseFilters,
+  HttpException,
 } from '@nestjs/common';
 import { UserCreateDto } from './dtos/user-create.dto';
 import { Request, Response } from 'express';
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import cookieConfig from '../config/cookie';
 import { UserService } from './user.service';
 import { Roles } from 'src/decorator/roles.decorator';
@@ -146,14 +147,27 @@ export class UserController {
   }
 
   @SkipThrottle()
-  @Get('verify')
+  @Post('verify')
   async verify(
-    @CurrentUser() CurrentUser: UserEntity,
+    @Body() { token }: { token: string },
     @Req() req: Request,
     @Res() res: Response,
   ) {
     try {
-      const user = await this.userService.findOneById(CurrentUser.id);
+      if (!token) {
+        throw new HttpException(
+          {
+            message: 'No Refresh token found.',
+            customCode: 'REFRESH_TOKEN_MISSING',
+          },
+          401,
+        );
+      }
+
+      const decoded = verify(token, process.env.SECRET) as UserEntity;
+
+      const user = await this.userService.findOneById(decoded.id);
+
       if (!user) return res.status(404).json({ auth: false });
 
       delete user.password;
