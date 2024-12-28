@@ -36,6 +36,12 @@ import {
   TicketHotel6CreateDto,
 } from './dtos/ticket-create-hotel.dto';
 import { getDtoMetadata } from 'src/utils/dto-metadata.util';
+import {
+  TicketCreateFinanceDtoApi,
+  TicketFinance1Dto,
+  TicketFinance2Dto,
+  TicketFinance3Dto,
+} from './dtos/ticket-create-finance.dto';
 
 @Controller('ticket')
 @UseFilters(new ErrorExceptionFilter())
@@ -61,6 +67,15 @@ export class TicketController {
       5: TicketHotel5CreateDto as unknown as Record<number, any>,
       6: TicketHotel6CreateDto as unknown as Record<number, any>,
     };
+
+  private static readonly TicketFinancelDto: Record<
+    number,
+    Record<number, any>
+  > = {
+    1: TicketFinance1Dto as unknown as Record<number, any>,
+    2: TicketFinance2Dto as unknown as Record<number, any>,
+    3: TicketFinance3Dto as unknown as Record<number, any>,
+  };
 
   constructor(private readonly ticketService: TicketService) {}
 
@@ -289,6 +304,94 @@ export class TicketController {
           break;
         case 6:
           metadata = getDtoMetadata(TicketHotel6CreateDto);
+          break;
+        default:
+          throw new Error('Unsupported ticket category');
+      }
+
+      return res.status(HttpStatus.OK).json(metadata);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @Post('create/3')
+  @Roles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
+  @ApiBody({
+    type: TicketCreateFinanceDtoApi,
+    description: 'Service Finance',
+  })
+  async createFinance(
+    @Body(new DynamicValidationPipe(TicketController.TicketFinancelDto))
+    createTicketDto: any,
+    @Res() res: Response,
+  ) {
+    try {
+      const { subcategory: subcategoryId } = createTicketDto;
+
+      switch (subcategoryId) {
+        case 1:
+          await this.ticketService.createTicketFinance1Client({
+            categoryId: 3,
+            subcategoryId,
+            ...createTicketDto,
+          });
+          break;
+
+        case 2:
+          await this.ticketService.createTicketFinance2Client({
+            categoryId: 3,
+            subcategoryId,
+            ...createTicketDto,
+          });
+          break;
+
+        case 3:
+          await this.ticketService.createTicketFinance3Client({
+            categoryId: 3,
+            subcategoryId,
+            ...createTicketDto,
+          });
+          break;
+        default:
+          throw new Error('Unsupported ticket category');
+      }
+
+      return res.status(HttpStatus.OK).json({
+        message: 'Ticket created successfully',
+      });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @Post('metadata/3')
+  @Roles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
+  async getFinanceMetadata(
+    @Body() body: { subcategory: number },
+    @Res() res: Response,
+  ) {
+    try {
+      const { subcategory: subcategoryId } = body;
+      let metadata: any;
+
+      switch (subcategoryId) {
+        case 1:
+          metadata = getDtoMetadata(TicketFinance1Dto);
+          break;
+        case 2:
+          metadata = getDtoMetadata(TicketFinance2Dto);
+          break;
+        case 3:
+          metadata = getDtoMetadata(TicketFinance3Dto);
           break;
         default:
           throw new Error('Unsupported ticket category');

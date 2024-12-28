@@ -151,6 +151,10 @@ export class Ticket {
   })
   departureLocation?: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  typeOfModification?: string;
+
   @Field({
     nullable: true,
   })
@@ -182,6 +186,24 @@ export class Ticket {
     nullable: true,
   })
   arrivalLocation?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  period?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  invoiceNumber?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({ nullable: true })
+  amount?: number;
 
   @CreateDateColumn()
   createdAt?: Date;

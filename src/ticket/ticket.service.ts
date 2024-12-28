@@ -17,6 +17,11 @@ import {
   TicketHotel5CreateDto,
   TicketHotel6CreateDto,
 } from './dtos/ticket-create-hotel.dto';
+import {
+  TicketFinance1Dto,
+  TicketFinance2Dto,
+  TicketFinance3Dto,
+} from './dtos/ticket-create-finance.dto';
 
 @Injectable()
 export class TicketService {
@@ -60,7 +65,6 @@ export class TicketService {
     createTicketDto: TicketBillet4CreateDto,
   ): Promise<Ticket> {
     const ticket = this.ticketRepository.create({
-      passengers: [createTicketDto.passenger],
       ...createTicketDto,
     } as DeepPartial<Ticket>);
 
@@ -139,6 +143,36 @@ export class TicketService {
 
   async createTicketHotel6Client(
     createTicketDto: TicketHotel6CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketFinance1Client(
+    createTicketDto: TicketFinance1Dto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketFinance2Client(
+    createTicketDto: TicketFinance2Dto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketFinance3Client(
+    createTicketDto: TicketFinance3Dto,
   ): Promise<Ticket> {
     const ticket = this.ticketRepository.create(
       createTicketDto as DeepPartial<Ticket>,

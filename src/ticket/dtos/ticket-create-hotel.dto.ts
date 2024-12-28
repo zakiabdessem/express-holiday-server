@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsBoolean,
@@ -99,14 +100,17 @@ export class TicketHotel1CreateDto {
   supplierReservationId: string;
 
   @ApiProperty({
-    example: { firstName: 'John', lastName: 'Doe' },
-    description: 'Details of the passenger',
+    example: [{ firstName: 'John', lastName: 'Doe' }],
+    description: 'Details of the passengers',
     required: true,
+    isArray: true,
   })
-  @ValidateNested()
-  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
-  passenger: PassengerDetailsDto;
+  passengers: PassengerDetailsDto[];
 
   @ApiProperty({
     example: 'Detailed description of the issue here...',
@@ -128,12 +132,12 @@ export class TicketHotel1CreateDto {
     refundReason: string,
     description: string,
     supplierReservationId: string,
-    passenger: PassengerDetailsDto,
+    passengers: PassengerDetailsDto[],
   ) {
     this.typeOfService = typeOfService;
     this.reserveNumber = reserveNumber;
     this.voucherNumber = voucherNumber;
-    this.passenger = passenger;
+    this.passengers = passengers;
     this.supplierReservationId = supplierReservationId;
     this.refundReason = refundReason;
     this.description = description;
@@ -208,14 +212,17 @@ export class TicketHotel2CreateDto {
   supplierReservationId: string;
 
   @ApiProperty({
-    example: { firstName: 'John', lastName: 'Doe' },
-    description: 'Details of the passenger',
+    example: [{ firstName: 'John', lastName: 'Doe' }],
+    description: 'Details of the passengers',
     required: true,
+    isArray: true,
   })
-  @ValidateNested()
-  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
-  passenger: PassengerDetailsDto;
+  passengers: PassengerDetailsDto[];
 
   @ApiProperty({
     example: 'Detailed description of the issue here...',
@@ -237,7 +244,7 @@ export class TicketHotel2CreateDto {
     typeOfService: TypeOfService,
     typeOfModification: TypeOfModification,
     supplierReservationId: string,
-    passenger: PassengerDetailsDto,
+    passengers: PassengerDetailsDto[],
     description: string,
   ) {
     this.changeReason = changeReason;
@@ -245,7 +252,7 @@ export class TicketHotel2CreateDto {
     this.typeOfService = typeOfService;
     this.typeOfModification = typeOfModification;
     this.supplierReservationId = supplierReservationId;
-    this.passenger = passenger;
+    this.passengers = passengers;
     this.description = description;
   }
 }
@@ -515,14 +522,18 @@ export class TicketHotel5CreateDto {
   changeReason: string;
 
   @ApiProperty({
-    example: { firstName: 'John', lastName: 'Doe' },
-    description: 'Details of the passenger',
+    example: [{ firstName: 'John', lastName: 'Doe' }],
+    description: 'Details of the passengers',
     required: true,
+    isArray: true,
   })
-  @ValidateNested()
-  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
-  passenger: PassengerDetailsDto;
+  passengers: PassengerDetailsDto[];
+
 
   @ApiProperty({
     example: 'Detailed description of the issue here...',
@@ -543,14 +554,14 @@ export class TicketHotel5CreateDto {
     typeOfService: TypeOfService,
     supplierReservationId: string,
     changeReason: string,
-    passenger: PassengerDetailsDto,
+    passengers: PassengerDetailsDto[],
     description: string,
   ) {
     this.reserveNumber = reserveNumber;
     this.typeOfService = typeOfService;
     this.supplierReservationId = supplierReservationId;
     this.changeReason = changeReason;
-    this.passenger = passenger;
+    this.passengers = passengers;
     this.description = description;
   }
 }

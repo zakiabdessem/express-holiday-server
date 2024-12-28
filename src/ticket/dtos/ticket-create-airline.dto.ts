@@ -13,11 +13,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  TicketHotel1CreateDto,
-  TicketHotel2CreateDto,
-  TicketHotel3CreateDto,
-} from './ticket-create-hotel.dto';
+
 
 export class PassengerDetailsDto {
   @ApiProperty({
@@ -343,14 +339,17 @@ export class TicketBillet4CreateDto {
   pnr: string;
 
   @ApiProperty({
-    example: { firstName: 'John', lastName: 'Doe', ticketNumber: 'T12345' },
-    description: 'Details of the passenger',
+    example: [{ firstName: 'John', lastName: 'Doe' }],
+    description: 'Details of the passengers',
     required: true,
+    isArray: true,
   })
-  @ValidateNested()
-  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
-  passenger: PassengerDetailsDto;
+  passengers: PassengerDetailsDto[];
 
   @ApiProperty({
     example: 'Detailed description of the issue here...',
@@ -368,12 +367,12 @@ export class TicketBillet4CreateDto {
   constructor(
     subject: string,
     pnr: string,
-    passenger: PassengerDetailsDto,
+    passengers: PassengerDetailsDto[],
     description: string,
   ) {
     this.subject = subject;
     this.pnr = pnr;
-    this.passenger = passenger;
+    this.passengers = passengers;
     this.description = description;
   }
 }

@@ -21,6 +21,7 @@ type Query {
 }
 
 type Ticket {
+  amount: Float
   arrivalDate: String
   arrivalLocation: String
   categoryId: Float!
@@ -31,10 +32,12 @@ type Ticket {
   description: String
   estimatedTickets: Float
   id: ID!
+  invoiceNumber: String
   last_reply: DateTime
   officeId: Float
   oneWayTransfer: Boolean
   passengers: [Passenger]
+  period: String
   pnr: String
   priority: TicketPriority!
   refundReason: String
@@ -44,6 +47,7 @@ type Ticket {
   subcategoryId: Float!
   subject: String
   supplierReservationId: String
+  typeOfModification: String
   typeOfService: String
   voucherNumber: String
 }
