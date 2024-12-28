@@ -12,7 +12,7 @@ export class DynamicValidationPipe implements PipeTransform {
 
     if (!this.dtoMap[subcategory]) {
       throw new BadRequestException(
-        `Invalid category or subcategory: ${subcategory}`,
+        `Invalid subcategory: ${subcategory}`,
       );
     }
 

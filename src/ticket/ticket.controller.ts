@@ -6,6 +6,7 @@ import {
   HttpStatus,
   UseGuards,
   UseFilters,
+  Get,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -34,6 +35,7 @@ import {
   TicketHotel5CreateDto,
   TicketHotel6CreateDto,
 } from './dtos/ticket-create-hotel.dto';
+import { getDtoMetadata } from 'src/utils/dto-metadata.util';
 
 @Controller('ticket')
 @UseFilters(new ErrorExceptionFilter())
@@ -136,6 +138,49 @@ export class TicketController {
     }
   }
 
+  @Post('metadata/1')
+  @Roles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
+  async getAirlineMetadata(
+    @Body() body: { subcategory: number },
+    @Res() res: Response,
+  ) {
+    try {
+      const { subcategory: subcategoryId } = body;
+      let metadata: any;
+
+      switch (subcategoryId) {
+        case 1:
+          metadata = getDtoMetadata(TicketBillet1CreateDto);
+          break;
+        case 2:
+          metadata = getDtoMetadata(TicketBillet2CreateDto);
+          break;
+        case 3:
+          metadata = getDtoMetadata(TicketBillet3CreateDto);
+          break;
+        case 4:
+          metadata = getDtoMetadata(TicketBillet4CreateDto);
+          break;
+        case 5:
+          metadata = getDtoMetadata(TicketBillet5CreateDto);
+          break;
+        case 6:
+          metadata = getDtoMetadata(TicketBillet6CreateDto);
+          break;
+        default:
+          throw new Error('Unsupported ticket category');
+      }
+
+      return res.status(HttpStatus.OK).json(metadata);
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
   @Post('create/2')
   @Roles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(GQLRolesGuard)
@@ -207,6 +252,49 @@ export class TicketController {
       return res.status(HttpStatus.OK).json({
         message: 'Ticket created successfully',
       });
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: error.message || 'Internal server error',
+      });
+    }
+  }
+
+  @Post('metadata/2')
+  @Roles(UserRole.ADMIN, UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
+  async getHotelMetadata(
+    @Body() body: { subcategory: number },
+    @Res() res: Response,
+  ) {
+    try {
+      const { subcategory: subcategoryId } = body;
+      let metadata: any;
+
+      switch (subcategoryId) {
+        case 1:
+          metadata = getDtoMetadata(TicketHotel1CreateDto);
+          break;
+        case 2:
+          metadata = getDtoMetadata(TicketHotel2CreateDto);
+          break;
+        case 3:
+          metadata = getDtoMetadata(TicketHotel3CreateDto);
+          break;
+        case 4:
+          metadata = getDtoMetadata(TicketHotel4CreateDto);
+          break;
+        case 5:
+          metadata = getDtoMetadata(TicketHotel5CreateDto);
+          break;
+        case 6:
+          metadata = getDtoMetadata(TicketHotel6CreateDto);
+          break;
+        default:
+          throw new Error('Unsupported ticket category');
+      }
+
+      return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

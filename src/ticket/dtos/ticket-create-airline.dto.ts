@@ -13,7 +13,11 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { TicketHotel1CreateDto, TicketHotel2CreateDto, TicketHotel3CreateDto } from './ticket-create-hotel.dto';
+import {
+  TicketHotel1CreateDto,
+  TicketHotel2CreateDto,
+  TicketHotel3CreateDto,
+} from './ticket-create-hotel.dto';
 
 export class PassengerDetailsDto {
   @ApiProperty({
@@ -80,15 +84,15 @@ export class TicketBillet1CreateDto {
   @MaxLength(255)
   description: string; //DIMA
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'high',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: string; //DIMA
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'high',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: string;
 
   @ApiProperty({
     example: 'Issue subject here',
@@ -100,6 +104,14 @@ export class TicketBillet1CreateDto {
   @MinLength(6)
   @MaxLength(120)
   subject: string;
+
+  constructor(
+    subject: string,
+    description: string,
+  ) {
+    this.subject = subject;
+    this.description = description;
+  }
 }
 
 export class TicketBillet2CreateDto {
@@ -112,15 +124,15 @@ export class TicketBillet2CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority; // Enum for ticket priority
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'PNRXYZ123',
@@ -165,6 +177,18 @@ export class TicketBillet2CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    refundReason: string,
+    pnr: string,
+    passengers: PassengerDetailsDto[],
+    description: string,
+  ) {
+    this.refundReason = refundReason;
+    this.pnr = pnr;
+    this.passengers = passengers;
+    this.description = description;
+  }
 }
 
 export class TicketBillet3CreateDto {
@@ -177,15 +201,15 @@ export class TicketBillet3CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'Wrong date',
@@ -262,6 +286,20 @@ export class TicketBillet3CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    changeReason: string,
+    refundReason: string,
+    pnr: string,
+    passengers: PassengerDetailsDto[],
+    description: string,
+  ) {
+    this.changeReason = changeReason;
+    this.refundReason = refundReason;
+    this.pnr = pnr;
+    this.passengers = passengers;
+    this.description = description;
+  }
 }
 
 export class TicketBillet4CreateDto {
@@ -274,15 +312,15 @@ export class TicketBillet4CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'Issue subject here',
@@ -326,6 +364,18 @@ export class TicketBillet4CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    subject: string,
+    pnr: string,
+    passenger: PassengerDetailsDto,
+    description: string,
+  ) {
+    this.subject = subject;
+    this.pnr = pnr;
+    this.passenger = passenger;
+    this.description = description;
+  }
 }
 
 export class TicketBillet5CreateDto {
@@ -338,15 +388,15 @@ export class TicketBillet5CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: '5',
@@ -378,6 +428,12 @@ export class TicketBillet5CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(estimatedTickets: number, officeId: number, description: string) {
+    this.estimatedTickets = estimatedTickets;
+    this.officeId = officeId;
+    this.description = description;
+  }
 }
 
 export class TicketBillet6CreateDto {
@@ -390,23 +446,23 @@ export class TicketBillet6CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'Issue subject here',
     description: 'Detailed subject of the issue, min 6 max 120',
     required: true,
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @MinLength(6)
   @MaxLength(120)
   subject: string;
@@ -416,8 +472,8 @@ export class TicketBillet6CreateDto {
     description: 'PNR (Passenger Name Record)',
     required: true,
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   pnr: string;
 
   @ApiProperty({
@@ -427,11 +483,17 @@ export class TicketBillet6CreateDto {
     minimum: 25,
     maximum: 255,
   })
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(subject: string, pnr: string, description: string) {
+    this.subject = subject;
+    this.pnr = pnr;
+    this.description = description;
+  }
 }
 
 export class TicketCreateAirlineDtoApi {

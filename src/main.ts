@@ -7,7 +7,8 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { urlencoded } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { doubleCsrf } from 'csrf-csrf';
+import 'reflect-metadata';
+
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {

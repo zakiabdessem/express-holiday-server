@@ -42,15 +42,15 @@ export class TicketHotel1CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority; // Enum for ticket priority
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority; // Enum for ticket priority
 
   @ApiProperty({
     example: 'Refund due to cancellation',
@@ -120,6 +120,24 @@ export class TicketHotel1CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    typeOfService: TypeOfService,
+    reserveNumber: string,
+    voucherNumber: string,
+    refundReason: string,
+    description: string,
+    supplierReservationId: string,
+    passenger: PassengerDetailsDto,
+  ) {
+    this.typeOfService = typeOfService;
+    this.reserveNumber = reserveNumber;
+    this.voucherNumber = voucherNumber;
+    this.passenger = passenger;
+    this.supplierReservationId = supplierReservationId;
+    this.refundReason = refundReason;
+    this.description = description;
+  }
 }
 
 export class TicketHotel2CreateDto {
@@ -132,15 +150,15 @@ export class TicketHotel2CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'Modification Reason',
@@ -211,6 +229,25 @@ export class TicketHotel2CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    subcategory: number,
+    changeReason: string,
+    reserveNumber: string,
+    typeOfService: TypeOfService,
+    typeOfModification: TypeOfModification,
+    supplierReservationId: string,
+    passenger: PassengerDetailsDto,
+    description: string,
+  ) {
+    this.changeReason = changeReason;
+    this.reserveNumber = reserveNumber;
+    this.typeOfService = typeOfService;
+    this.typeOfModification = typeOfModification;
+    this.supplierReservationId = supplierReservationId;
+    this.passenger = passenger;
+    this.description = description;
+  }
 }
 
 export class TicketHotel3CreateDto {
@@ -223,15 +260,15 @@ export class TicketHotel3CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority; // Enum for ticket priority
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority; // Enum for ticket priority
 
   @ApiProperty({
     example: 'Refund due to cancellation',
@@ -281,6 +318,21 @@ export class TicketHotel3CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    subcategory: number,
+    refundReason: string,
+    voucherNumber: string,
+    reserveNumber: string,
+    supplierReservationId: string,
+    description: string,
+  ) {
+    this.refundReason = refundReason;
+    this.voucherNumber = voucherNumber;
+    this.reserveNumber = reserveNumber;
+    this.supplierReservationId = supplierReservationId;
+    this.description = description;
+  }
 }
 
 export class TicketHotel4CreateDto {
@@ -293,15 +345,15 @@ export class TicketHotel4CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority; // Enum for ticket priority
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority; // Enum for ticket priority
 
   @ApiProperty({
     example: [{ firstName: 'John', lastName: 'Doe' }],
@@ -382,6 +434,27 @@ export class TicketHotel4CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    subcategory: number,
+    passengers: PassengerDetailsDto[],
+    departureDate: string,
+    arrivalDate: string,
+    departureLocation: string,
+    arrivalLocation: string,
+    oneWayTransfer: boolean,
+    roundTripTransfer: boolean,
+    description: string,
+  ) {
+    this.passengers = passengers;
+    this.departureDate = departureDate;
+    this.arrivalDate = arrivalDate;
+    this.departureLocation = departureLocation;
+    this.arrivalLocation = arrivalLocation;
+    this.oneWayTransfer = oneWayTransfer;
+    this.roundTripTransfer = roundTripTransfer;
+    this.description = description;
+  }
 }
 
 export class TicketHotel5CreateDto {
@@ -394,15 +467,15 @@ export class TicketHotel5CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'R123456',
@@ -463,6 +536,23 @@ export class TicketHotel5CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(
+    subcategory: number,
+    reserveNumber: string,
+    typeOfService: TypeOfService,
+    supplierReservationId: string,
+    changeReason: string,
+    passenger: PassengerDetailsDto,
+    description: string,
+  ) {
+    this.reserveNumber = reserveNumber;
+    this.typeOfService = typeOfService;
+    this.supplierReservationId = supplierReservationId;
+    this.changeReason = changeReason;
+    this.passenger = passenger;
+    this.description = description;
+  }
 }
 
 export class TicketHotel6CreateDto {
@@ -475,15 +565,15 @@ export class TicketHotel6CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  @IsNotEmpty()
-  @IsEnum(TicketPriority)
-  @ApiProperty({
-    example: 'low',
-    description: 'Priority of the ticket',
-    enum: TicketPriority,
-    required: true,
-  })
-  priority: TicketPriority;
+  // @IsNotEmpty()
+  // @IsEnum(TicketPriority)
+  // @ApiProperty({
+  //   example: 'low',
+  //   description: 'Priority of the ticket',
+  //   enum: TicketPriority,
+  //   required: true,
+  // })
+  // priority: TicketPriority;
 
   @ApiProperty({
     example: 'Subject',
@@ -506,6 +596,11 @@ export class TicketHotel6CreateDto {
   @MinLength(25)
   @MaxLength(255)
   description: string;
+
+  constructor(subcategory: number, subject: string, description: string) {
+    this.subject = subject;
+    this.description = description;
+  }
 }
 
 export class TicketCreateHotelDtoApi {
