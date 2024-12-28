@@ -21,21 +21,31 @@ type Query {
 }
 
 type Ticket {
+  arrivalDate: String
+  arrivalLocation: String
   categoryId: Float!
   changeReason: String
   datesAndItineraries: [String!]
+  departureDate: String
+  departureLocation: String
   description: String
   estimatedTickets: Float
   id: ID!
   last_reply: DateTime
   officeId: Float
+  oneWayTransfer: Boolean
   passengers: [Passenger]
   pnr: String
   priority: TicketPriority!
   refundReason: String
+  reserveNumber: String
+  roundTripTransfer: Boolean
   status: String!
   subcategoryId: Float!
   subject: String
+  supplierReservationId: String
+  typeOfService: String
+  voucherNumber: String
 }
 
 enum TicketPriority {

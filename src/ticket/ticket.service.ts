@@ -9,6 +9,14 @@ import {
   TicketBillet5CreateDto,
   TicketBillet6CreateDto,
 } from './dtos/ticket-create-airline.dto';
+import {
+  TicketHotel1CreateDto,
+  TicketHotel2CreateDto,
+  TicketHotel3CreateDto,
+  TicketHotel4CreateDto,
+  TicketHotel5CreateDto,
+  TicketHotel6CreateDto,
+} from './dtos/ticket-create-hotel.dto';
 
 @Injectable()
 export class TicketService {
@@ -71,6 +79,66 @@ export class TicketService {
 
   async createTicketBillet6Client(
     createTicketDto: TicketBillet6CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel1Client(
+    createTicketDto: TicketHotel1CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel2Client(
+    createTicketDto: TicketHotel2CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel3Client(
+    createTicketDto: TicketHotel3CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel4Client(
+    createTicketDto: TicketHotel4CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel5Client(
+    createTicketDto: TicketHotel5CreateDto,
+  ): Promise<Ticket> {
+    const ticket = this.ticketRepository.create(
+      createTicketDto as DeepPartial<Ticket>,
+    );
+
+    return await this.ticketRepository.save(ticket);
+  }
+
+  async createTicketHotel6Client(
+    createTicketDto: TicketHotel6CreateDto,
   ): Promise<Ticket> {
     const ticket = this.ticketRepository.create(
       createTicketDto as DeepPartial<Ticket>,

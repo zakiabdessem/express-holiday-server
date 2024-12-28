@@ -103,6 +103,86 @@ export class Ticket {
   })
   officeId?: number;
 
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  voucherNumber?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  reserveNumber?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  typeOfService?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  supplierReservationId?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  departureDate?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  departureLocation?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  arrivalDate?: string;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  oneWayTransfer?: boolean;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  roundTripTransfer?: boolean;
+
+  @Field({
+    nullable: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  arrivalLocation?: string;
+
   @CreateDateColumn()
   createdAt?: Date;
 

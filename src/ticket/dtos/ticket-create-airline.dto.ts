@@ -13,6 +13,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { TicketHotel1CreateDto, TicketHotel2CreateDto, TicketHotel3CreateDto } from './ticket-create-hotel.dto';
 
 export class PassengerDetailsDto {
   @ApiProperty({
@@ -433,7 +434,7 @@ export class TicketBillet6CreateDto {
   description: string;
 }
 
-export class TicketCreateDtoApi {
+export class TicketCreateAirlineDtoApi {
   @ApiProperty({ type: TicketBillet1CreateDto, required: false })
   'Request / Claim For A Ticket'?: TicketBillet1CreateDto;
 
@@ -451,4 +452,13 @@ export class TicketCreateDtoApi {
 
   @ApiProperty({ type: TicketBillet6CreateDto, required: false })
   'Demande De Tarif Spécial'?: TicketBillet6CreateDto;
+
+  // @ApiProperty({ type: TicketHotel1CreateDto, required: false })
+  // 'Demande De Remboursement D un Hôtel'?: TicketHotel1CreateDto;
+
+  // @ApiProperty({ type: TicketHotel2CreateDto, required: false })
+  // 'Demande De Modification D un Hôtel'?: TicketHotel2CreateDto;
+
+  // @ApiProperty({ type: TicketHotel3CreateDto, required: false })
+  // "Réclamation D'un Hotel"?: TicketHotel3CreateDto;
 }
