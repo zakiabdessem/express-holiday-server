@@ -9,14 +9,13 @@ import { urlencoded } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'reflect-metadata';
 
-
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
 
   const config = new DocumentBuilder()
-    .setTitle('Opera API example')
+    .setTitle('Express holiday API example')
     .setDescription('The API description')
     .setVersion('1.0')
     .build();

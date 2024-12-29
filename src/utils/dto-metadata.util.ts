@@ -67,6 +67,19 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
       fieldMetadata.required = true;
     }
 
+    const enumMetadata = validationMetadata.find(
+      (meta: ValidationMetadata) => meta.name === 'isEnum',
+    );
+    
+    if (enumMetadata) {
+      const enumConstraint = enumMetadata.constraints.find(
+        (constraint: any) => Array.isArray(constraint)
+      );
+      if (enumConstraint) {
+        fieldMetadata.enum = enumConstraint;
+      }
+    }
+
     // Handle nested types (e.g., @Type(() => SomeClass))
     const typeMetadata = Reflect.getMetadata('design:type', dto.prototype, key);
     if (typeMetadata) {
