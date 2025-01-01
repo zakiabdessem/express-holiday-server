@@ -22,33 +22,52 @@ type Query {
 
 type Ticket {
   amount: Float
+  arrangement: String
   arrivalDate: String
   arrivalLocation: String
   categoryId: Float!
   changeReason: String
+  city: String
   datesAndItineraries: [String!]
   departureDate: String
   departureLocation: String
   description: String
+  destination: String
+  endDate: String
   estimatedTickets: Float
+  excursion: String
+  hotels: String
   id: ID!
   invoiceNumber: String
   last_reply: DateTime
+  numberOfAdults: Float
+  numberOfBabies: Float
+  numberOfChildren: Float
+  numberOfPassengers: Float
+  numberOfRooms: Float
   officeId: Float
   oneWayTransfer: Boolean
+  options: String
+  origin: String
   passengers: [Passenger]
   period: String
   pnr: String
   priority: TicketPriority!
   refundReason: String
   reserveNumber: String
+  roomType: String
   roundTripTransfer: Boolean
+  startDate: String
   status: String!
+  stayDuration: Float
   subcategoryId: Float!
   subject: String
+  supplement: Float
   supplierReservationId: String
+  transfer: String
   typeOfModification: String
   typeOfService: String
+  user: String
   voucherNumber: String
 }
 

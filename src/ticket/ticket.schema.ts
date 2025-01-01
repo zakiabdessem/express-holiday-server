@@ -205,6 +205,82 @@ export class Ticket {
   @Column({ nullable: true })
   amount?: number;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  origin?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  destination?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  stayDuration?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  excursion?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  arrangement?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  options?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  transfer?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  numberOfRooms?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  hotels?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  city?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  numberOfPassengers?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  roomType?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  user?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  startDate?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  endDate?: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  supplement?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  numberOfAdults?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  numberOfChildren?: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  numberOfBabies?: number;
+
   @CreateDateColumn()
   createdAt?: Date;
 
@@ -246,3 +322,4 @@ export class Passenger {
   @UpdateDateColumn()
   updatedAt?: Date;
 }
+
