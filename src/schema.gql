@@ -7,6 +7,16 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Message {
+  createdAt: DateTime!
+  id: ID!
+  message: String!
+  senderId: String!
+  ticket: Ticket!
+  ticketId: Float!
+  updatedAt: DateTime!
+}
+
 type Passenger {
   firstName: String!
   lastName: String!
@@ -40,6 +50,7 @@ type Ticket {
   id: ID!
   invoiceNumber: String
   last_reply: DateTime
+  messages: [Message!]!
   numberOfAdults: Float
   numberOfBabies: Float
   numberOfChildren: Float
@@ -67,7 +78,9 @@ type Ticket {
   transfer: String
   typeOfModification: String
   typeOfService: String
-  user: String
+  user: UserEntity!
+  userId: String
+  username: String
   voucherNumber: String
 }
 
@@ -86,6 +99,7 @@ type UserEntity {
   last_name: String!
   profilePicture: String
   role: UserRole!
+  tickets: [String]
 }
 
 enum UserRole {

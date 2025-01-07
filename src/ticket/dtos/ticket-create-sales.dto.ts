@@ -323,7 +323,7 @@ export class TicketSales4Dto {
   @IsNotEmpty()
   @MinLength(3)
   @MaxLength(100)
-  user: string;
+  username: string;
 
   @ApiProperty({
     example: '2024-01-01',
@@ -357,12 +357,12 @@ export class TicketSales4Dto {
   description: string;
 
   constructor(
-    user: string,
+    username: string,
     startDate: string,
     endDate: string,
     description: string,
   ) {
-    this.user = user;
+    this.username = username;
     this.startDate = startDate;
     this.endDate = endDate;
     this.description = description;

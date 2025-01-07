@@ -6,15 +6,18 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Category } from 'src/category/category.schema';
-import { Subcategory } from 'src/category/subcategory.schema';
 import { TicketPriority } from './dtos/ticket-create-airline.dto';
+import { Message } from 'src/chat/message.schema';
+import { UserEntity } from 'src/user/user.schema';
 
 enum TicketStatus {
   INPROGRESS = 'inprogress',
   CLOSED = 'closed',
+  RESOLVED = 'RESOLVED',
   OPEN = 'open',
 }
 
@@ -27,7 +30,7 @@ registerEnumType(TicketPriority, {
 export class Ticket {
   @Field(() => ID)
   @PrimaryGeneratedColumn('increment')
-  id: string;
+  id: number;
 
   @Field(() => Date, { nullable: true })
   @Column({ type: 'timestamp without time zone', nullable: true })
@@ -255,7 +258,7 @@ export class Ticket {
 
   @Field({ nullable: true })
   @Column({ nullable: true })
-  user?: string;
+  username?: string;
 
   @Field({ nullable: true })
   @Column({ nullable: true })
@@ -280,6 +283,22 @@ export class Ticket {
   @Field({ nullable: true })
   @Column({ nullable: true })
   numberOfBabies?: number;
+
+  // @Field(() => [ChatMessage], { nullable: 'itemsAndList' })
+  // @OneToMany(() => ChatMessage, (message) => message.ticket)
+  // messages: ChatMessage[];
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  userId?: string;
+
+  @Field(() => UserEntity)
+  @ManyToOne(() => UserEntity, (user) => user.tickets)
+  user: UserEntity; //WHO OWN TICKET
+
+  @Field(() => [Message])
+  @OneToMany(() => Message, (message) => message.ticket)
+  messages: Message[];
 
   @CreateDateColumn()
   createdAt?: Date;
@@ -322,4 +341,3 @@ export class Passenger {
   @UpdateDateColumn()
   updatedAt?: Date;
 }
-

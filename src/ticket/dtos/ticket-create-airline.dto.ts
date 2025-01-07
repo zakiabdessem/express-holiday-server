@@ -47,6 +47,7 @@ export class PassengerDetailsDto {
 export enum TicketStatus {
   INPROGRESS = 'inprogress',
   CLOSED = 'closed',
+  RESOLVED = 'RESOLVED',
   OPEN = 'open',
 }
 

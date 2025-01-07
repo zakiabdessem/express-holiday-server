@@ -11,6 +11,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';
 import { CategoryModule } from './category/category.module';
+import { ChatModule } from './chat/message.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CategoryModule } from './category/category.module';
     ),
     UserModule,
     TicketModule,
+    ChatModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

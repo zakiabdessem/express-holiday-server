@@ -53,6 +53,8 @@ import {
   TicketCreateTravelDtoApi,
   TicketTravelDetailsDto,
 } from './dtos/ticket-create-travel.dto';
+import { CurrentUser } from 'src/decorator/user.entity';
+import { UserEntity } from 'src/user/user.schema';
 
 @Controller('ticket')
 @UseFilters(new ErrorExceptionFilter())
@@ -113,6 +115,7 @@ export class TicketController {
   async createAirline(
     @Body(new DynamicValidationPipe(TicketController.TicketAirlineDto))
     createTicketDto: any,
+    @CurrentUser() user: UserEntity,
     @Res() res: Response,
   ) {
     try {
@@ -121,6 +124,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketBillet1Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -128,12 +132,14 @@ export class TicketController {
           break;
         case 2:
           await this.ticketService.createTicketBillet2Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
           });
         case 3:
           await this.ticketService.createTicketBillet3Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -142,6 +148,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketBillet4Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -150,6 +157,7 @@ export class TicketController {
 
         case 5:
           await this.ticketService.createTicketBillet5Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -157,6 +165,7 @@ export class TicketController {
           break;
         case 6:
           await this.ticketService.createTicketBillet6Client({
+            user: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -230,6 +239,7 @@ export class TicketController {
   async createHotel(
     @Body(new DynamicValidationPipe(TicketController.TicketHotelDto))
     createTicketDto: any,
+    @CurrentUser() user: UserEntity,
     @Res() res: Response,
   ) {
     try {
@@ -238,6 +248,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketHotel1Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -246,6 +257,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketHotel2Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -254,6 +266,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketHotel3Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -262,6 +275,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketHotel4Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -270,6 +284,7 @@ export class TicketController {
 
         case 5:
           await this.ticketService.createTicketHotel5Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -278,6 +293,7 @@ export class TicketController {
 
         case 6:
           await this.ticketService.createTicketHotel6Client({
+            user: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -352,6 +368,7 @@ export class TicketController {
   async createFinance(
     @Body(new DynamicValidationPipe(TicketController.TicketFinancelDto))
     createTicketDto: any,
+    @CurrentUser() user: UserEntity,
     @Res() res: Response,
   ) {
     try {
@@ -360,6 +377,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketFinance1Client({
+            user: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -368,6 +386,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketFinance2Client({
+            user: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -376,6 +395,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketFinance3Client({
+            user: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -440,6 +460,7 @@ export class TicketController {
   async createSales(
     @Body(new DynamicValidationPipe(TicketController.TicketSalesDto))
     createTicketDto: any,
+    @CurrentUser() user: UserEntity,
     @Res() res: Response,
   ) {
     try {
@@ -448,6 +469,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketSales1Client({
+            user: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -456,6 +478,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketSales2Client({
+            user: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -464,6 +487,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketSales3Client({
+            user: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -472,6 +496,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketSales4Client({
+            user: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -539,6 +564,7 @@ export class TicketController {
   async createTravel(
     @Body(new DynamicValidationPipe(TicketController.TicketTravelDto))
     createTicketDto: any,
+    @CurrentUser() user: UserEntity,
     @Res() res: Response,
   ) {
     try {
@@ -547,6 +573,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketTravel1Client({
+            user: user.id,
             categoryId: 5,
             subcategoryId,
             ...createTicketDto,

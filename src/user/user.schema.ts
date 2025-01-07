@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+} from 'typeorm';
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { registerEnumType } from '@nestjs/graphql';
 import { UserRole } from 'src/decorator/role.entity';
+import { Ticket } from 'src/ticket/ticket.schema';
 
 registerEnumType(UserRole, {
   name: 'UserRole',
@@ -44,6 +51,10 @@ export class UserEntity extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   contactNumber?: string;
+
+  @Field(() => [String], { nullable: 'itemsAndList' })
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets: string[];
 
   @Field(() => UserRole)
   @Column({
