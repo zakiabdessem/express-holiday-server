@@ -14,17 +14,16 @@ export class CategoryService {
   ) {}
 
   async findSubCategoriesById(id: number): Promise<Subcategory[] | null> {
-    const category = await this.categoryRepository.findOne({ where: { id } });
+    // Find subcategories directly by categoryId
+    const subcategories = await this.subcategoryRepository.find({
+      where: { categoryId: id },
+    });
 
-    if (!category) {
+    if (!subcategories || subcategories.length === 0) {
       return null;
     }
 
-    return this.subcategoryRepository.find({
-      where: {
-        category: { id: category.id },
-      },
-    });
+    return subcategories;
   }
 
   async findAll(): Promise<Category[]> {

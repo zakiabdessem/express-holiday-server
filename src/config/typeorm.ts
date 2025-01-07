@@ -1,5 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { config as dotenvConfig } from 'dotenv';
+import { Message } from 'src/chat/message.schema';
+import { Ticket } from 'src/ticket/ticket.schema';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 dotenvConfig({ path: '.env' });
@@ -14,7 +16,7 @@ const config = {
   //   password: `${process.env.DATABASE_PASSWORD}`,
   //   database: `${process.env.DATABASE_NAME}`,
 
-  entities: ['dist/**/*.schema.js'],
+  entities: ['dist/**/*.schema.js', Ticket, Message],
   migrations: ['dist/src/migrations/*.js'],
   autoLoadEntities: true,
   synchronize: true,

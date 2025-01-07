@@ -7,6 +7,7 @@ import {
   UseGuards,
   Get,
   UseFilters,
+  Param,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -37,20 +38,16 @@ export class CategoryController {
     }
   }
 
-  @Get(':id/all')
+  @Get(':id/subcategories') // Use :id as a route parameter
   @Roles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(GQLRolesGuard)
   async subcategories(
-    @Body()
-    body: {
-      id: number;
-    },
+    @Param('id') id: number,
     @Res() res: Response,
   ) {
     try {
-      const subcategories = await this.categoryService.findSubCategoriesById(
-        body.id,
-      );
+      const subcategories =
+        await this.categoryService.findSubCategoriesById(id);
 
       return res.status(HttpStatus.OK).json({ subcategories });
     } catch (error) {

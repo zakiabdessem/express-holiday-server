@@ -11,10 +11,10 @@ import { UserRole } from 'src/decorator/role.entity';
 import { Ticket } from 'src/ticket/ticket.schema';
 
 registerEnumType(UserRole, {
-  name: 'UserRole',
+  name: 'UserRoles',
 });
 
-@ObjectType()
+@ObjectType('User')
 @Entity({
   name: 'users',
 })

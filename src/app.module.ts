@@ -23,6 +23,7 @@ import { ChatModule } from './chat/message.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
+      
     }),
     forwardRef(() =>
       GraphQLModule.forRoot<ApolloDriverConfig>({

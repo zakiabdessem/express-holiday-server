@@ -1,6 +1,5 @@
-// src/chat/entities/message.entity.ts
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Ticket } from 'src/ticket/ticket.schema';
+import { Ticket } from 'src/ticket/ticket.schema'; // Regular import
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,34 +10,34 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@ObjectType()
+@ObjectType('messages')
 @Entity('messages')
 export class Message {
-  @Field(() => ID)
+  @Field(() => ID) // Ensure this decorator is present
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Field()
+  @Field() // Ensure this decorator is present
   @Column()
   senderId: string;
 
-  @Field()
+  @Field() // Ensure this decorator is present
   @Column()
   message: string;
 
-  @Field()
+  @Field() // Ensure this decorator is present
   @Column()
   ticketId: number;
 
-  @Field(() => Date)
+  @Field(() => Date) // Ensure this decorator is present
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => Date)
+  @Field(() => Date) // Ensure this decorator is present
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => Ticket)
+  @Field(() => Ticket) // Use a function to resolve the type
   @ManyToOne(() => Ticket, (ticket) => ticket.messages)
   @JoinColumn({ name: 'ticketId' })
   ticket: Ticket;

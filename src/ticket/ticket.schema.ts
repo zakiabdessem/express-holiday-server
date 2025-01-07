@@ -22,10 +22,10 @@ enum TicketStatus {
 }
 
 registerEnumType(TicketPriority, {
-  name: 'TicketPriority',
+  name: 'TicketPrioritys',
 });
 
-@ObjectType()
+@ObjectType('tickets')
 @Entity('tickets')
 export class Ticket {
   @Field(() => ID)
@@ -284,10 +284,6 @@ export class Ticket {
   @Column({ nullable: true })
   numberOfBabies?: number;
 
-  // @Field(() => [ChatMessage], { nullable: 'itemsAndList' })
-  // @OneToMany(() => ChatMessage, (message) => message.ticket)
-  // messages: ChatMessage[];
-
   @Field({ nullable: true })
   @Column({ nullable: true })
   userId?: string;
@@ -307,7 +303,7 @@ export class Ticket {
   updatedAt?: Date;
 }
 
-@ObjectType()
+@ObjectType('passengers')
 @Entity('passengers')
 export class Passenger {
   @PrimaryGeneratedColumn('increment')

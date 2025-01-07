@@ -10,7 +10,7 @@ import { Ticket } from 'src/ticket/ticket.schema';
 
 @Entity('subcategories')
 export class Subcategory {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @Column()
@@ -21,4 +21,7 @@ export class Subcategory {
 
   @ManyToOne(() => Category, (category) => category.subcategories)
   category: Category;
+
+  @Column()
+  categoryId: number;
 }

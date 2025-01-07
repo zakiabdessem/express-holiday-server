@@ -4,7 +4,7 @@ import { Ticket } from 'src/ticket/ticket.schema';
 
 @Entity('categories')
 export class Category {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ unique: true })
