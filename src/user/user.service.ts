@@ -48,6 +48,7 @@ export class UserService {
     const user = await this.userRepository.findOne({
       where: { email: createUserDto.email.toLowerCase() },
     });
+
     if (user) {
       throw new Error('UserEntity already exists');
     }

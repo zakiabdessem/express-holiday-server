@@ -57,7 +57,6 @@ export class UserController {
 
       return res.status(HttpStatus.OK).json({
         message: 'Vous avez enregistré avec succès.',
-        data: await this.userService.createUserAdmin(createUserDto),
       });
     } catch (error) {
       console.log(error);
