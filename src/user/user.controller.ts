@@ -47,8 +47,6 @@ export class UserController {
     }
   }
 
-  @Roles(UserRole.ADMIN)
-  @UseGuards(GQLRolesGuard)
   @Post('register/admin')
   async registerAdmin(
     @Body() createUserDto: UserCreateDto,
