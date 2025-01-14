@@ -14,7 +14,6 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-
 export class PassengerDetailsDto {
   @ApiProperty({
     example: 'John',
@@ -102,10 +101,7 @@ export class TicketBillet1CreateDto {
   @MaxLength(120)
   subject: string;
 
-  constructor(
-    subject: string,
-    description: string,
-  ) {
+  constructor(subject: string, description: string) {
     this.subject = subject;
     this.description = description;
   }
@@ -514,13 +510,4 @@ export class TicketCreateAirlineDtoApi {
 
   @ApiProperty({ type: TicketBillet6CreateDto, required: false })
   'Demande De Tarif Spécial'?: TicketBillet6CreateDto;
-
-  // @ApiProperty({ type: TicketHotel1CreateDto, required: false })
-  // 'Demande De Remboursement D un Hôtel'?: TicketHotel1CreateDto;
-
-  // @ApiProperty({ type: TicketHotel2CreateDto, required: false })
-  // 'Demande De Modification D un Hôtel'?: TicketHotel2CreateDto;
-
-  // @ApiProperty({ type: TicketHotel3CreateDto, required: false })
-  // "Réclamation D'un Hotel"?: TicketHotel3CreateDto;
 }

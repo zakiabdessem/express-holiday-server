@@ -124,7 +124,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketBillet1Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -132,14 +132,14 @@ export class TicketController {
           break;
         case 2:
           await this.ticketService.createTicketBillet2Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
           });
         case 3:
           await this.ticketService.createTicketBillet3Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -148,7 +148,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketBillet4Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -157,7 +157,7 @@ export class TicketController {
 
         case 5:
           await this.ticketService.createTicketBillet5Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -165,7 +165,7 @@ export class TicketController {
           break;
         case 6:
           await this.ticketService.createTicketBillet6Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 1,
             subcategoryId,
             ...createTicketDto,
@@ -248,7 +248,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketHotel1Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -257,7 +257,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketHotel2Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -266,7 +266,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketHotel3Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -275,7 +275,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketHotel4Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -284,7 +284,7 @@ export class TicketController {
 
         case 5:
           await this.ticketService.createTicketHotel5Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -293,7 +293,7 @@ export class TicketController {
 
         case 6:
           await this.ticketService.createTicketHotel6Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 2,
             subcategoryId,
             ...createTicketDto,
@@ -323,10 +323,10 @@ export class TicketController {
     @Res() res: Response,
   ) {
     try {
-      const { subcategory: subcategoryId } = body;
+      const { subcategory } = body;
       let metadata: any;
 
-      switch (subcategoryId) {
+      switch (subcategory) {
         case 1:
           metadata = getDtoMetadata(TicketHotel1CreateDto);
           break;
@@ -377,7 +377,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketFinance1Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -386,7 +386,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketFinance2Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -395,7 +395,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketFinance3Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 3,
             subcategoryId,
             ...createTicketDto,
@@ -469,7 +469,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketSales1Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -478,7 +478,7 @@ export class TicketController {
 
         case 2:
           await this.ticketService.createTicketSales2Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -487,7 +487,7 @@ export class TicketController {
 
         case 3:
           await this.ticketService.createTicketSales3Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -496,7 +496,7 @@ export class TicketController {
 
         case 4:
           await this.ticketService.createTicketSales4Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 4,
             subcategoryId,
             ...createTicketDto,
@@ -573,7 +573,7 @@ export class TicketController {
       switch (subcategoryId) {
         case 1:
           await this.ticketService.createTicketTravel1Client({
-            user: user.id,
+            userId: user.id,
             categoryId: 5,
             subcategoryId,
             ...createTicketDto,

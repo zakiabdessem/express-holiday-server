@@ -24,6 +24,18 @@ export class ChatService {
     });
 
     if (
+      !ticket
+    ) {
+      throw new HttpException(
+        {
+          message: 'Ticket not found.',
+          customCode: 'TICKET_NOT_FOUND',
+        },
+        403,
+      );
+    }
+
+    if (
       ticket.status === TicketStatus.CLOSED ||
       ticket.status === TicketStatus.RESOLVED
     ) {

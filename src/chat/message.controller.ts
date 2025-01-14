@@ -35,6 +35,7 @@ export class ChatController {
         message: 'Message created successfully',
       });
     } catch (error) {
+      console.log("🚀 ~ error:", error)
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
         message: error.message || 'Internal server error',

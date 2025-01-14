@@ -43,16 +43,6 @@ export class TicketHotel1CreateDto {
   @IsNotEmpty()
   subcategory: number;
 
-  // @IsNotEmpty()
-  // @IsEnum(TicketPriority)
-  // @ApiProperty({
-  //   example: 'low',
-  //   description: 'Priority of the ticket',
-  //   enum: TicketPriority,
-  //   required: true,
-  // })
-  // priority: TicketPriority; // Enum for ticket priority
-
   @ApiProperty({
     example: 'Refund due to cancellation',
     description: 'Reason for the refund request',

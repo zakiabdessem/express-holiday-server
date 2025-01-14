@@ -288,7 +288,9 @@ export class Ticket {
   @Column({ nullable: true })
   userId?: string;
 
-  @Field(() => UserEntity)
+  @Field(() => UserEntity, {
+    nullable: true,
+  })
   @ManyToOne(() => UserEntity, (user) => user.tickets)
   user: UserEntity; //WHO OWN TICKET
 

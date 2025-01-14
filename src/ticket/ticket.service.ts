@@ -40,226 +40,237 @@ export class TicketService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
+  private async setUserRelationship(userId: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
+  }
+
   async createTicketBillet1Client(
-    createTicketDto: TicketBillet1CreateDto,
+    createTicketDto: TicketBillet1CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet2Client(
-    createTicketDto: TicketBillet1CreateDto & { user: string },
+    createTicketDto: TicketBillet1CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet3Client(
-    createTicketDto: TicketBillet3CreateDto & { user: string },
+    createTicketDto: TicketBillet3CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet4Client(
-    createTicketDto: TicketBillet4CreateDto & { user: string },
+    createTicketDto: TicketBillet4CreateDto & { userId: string },
   ): Promise<Ticket> {
+    const user = await this.setUserRelationship(createTicketDto.userId);
     const ticket = this.ticketRepository.create({
       ...createTicketDto,
+      user,
     } as DeepPartial<Ticket>);
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet5Client(
-    createTicketDto: TicketBillet5CreateDto & { user: string },
+    createTicketDto: TicketBillet5CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketBillet6Client(
-    createTicketDto: TicketBillet6CreateDto & { user: string },
+    createTicketDto: TicketBillet6CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel1Client(
-    createTicketDto: TicketHotel1CreateDto & { user: string },
+    createTicketDto: TicketHotel1CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel2Client(
-    createTicketDto: TicketHotel2CreateDto & { user: string },
+    createTicketDto: TicketHotel2CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel3Client(
-    createTicketDto: TicketHotel3CreateDto & { user: string },
+    createTicketDto: TicketHotel3CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel4Client(
-    createTicketDto: TicketHotel4CreateDto & { user: string },
+    createTicketDto: TicketHotel4CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel5Client(
-    createTicketDto: TicketHotel5CreateDto & { user: string },
+    createTicketDto: TicketHotel5CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketHotel6Client(
-    createTicketDto: TicketHotel6CreateDto & { user: string },
+    createTicketDto: TicketHotel6CreateDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketFinance1Client(
-    createTicketDto: TicketFinance1Dto & { user: string },
+    createTicketDto: TicketFinance1Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketFinance2Client(
-    createTicketDto: TicketFinance2Dto & { user: string },
+    createTicketDto: TicketFinance2Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketFinance3Client(
-    createTicketDto: TicketFinance3Dto & { user: string },
+    createTicketDto: TicketFinance3Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketSales1Client(
-    createTicketDto: TicketSales1Dto & { user: string },
+    createTicketDto: TicketSales1Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketSales2Client(
-    createTicketDto: TicketSales2Dto & { user: string },
+    createTicketDto: TicketSales2Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketSales3Client(
-    createTicketDto: TicketSales3Dto & { user: string },
+    createTicketDto: TicketSales3Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketSales4Client(
-    createTicketDto: TicketSales4Dto & { user: string },
+    createTicketDto: TicketSales4Dto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async createTicketTravel1Client(
-    createTicketDto: TicketTravelDetailsDto & { user: string },
+    createTicketDto: TicketTravelDetailsDto & { userId: string },
   ): Promise<Ticket> {
-    const ticket = this.ticketRepository.create(
-      createTicketDto as DeepPartial<Ticket>,
-    );
-    const savedTicket = await this.ticketRepository.save(ticket);
-
-    return savedTicket;
+    const user = await this.setUserRelationship(createTicketDto.userId);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      user,
+    } as DeepPartial<Ticket>);
+    return this.ticketRepository.save(ticket);
   }
 
   async findOne(id: number): Promise<Ticket | null> {
-    return this.ticketRepository.findOne({
+    return await this.ticketRepository.findOne({
+      relations: ['user'],
       where: {
         id,
       },
@@ -267,15 +278,25 @@ export class TicketService {
   }
 
   async findOneById(id: number): Promise<Ticket | null> {
-    return this.ticketRepository.findOne({
+    return await this.ticketRepository.findOne({
+      relations: ['user'],
       where: {
         id,
       },
     });
   }
 
+  async findAllById(id: string): Promise<Ticket[]> {
+    return await this.ticketRepository.find({
+      relations: ['user'],
+      where: {
+        userId: id,
+      },
+    });
+  }
+
   async findAll(): Promise<Ticket[]> {
-    return this.ticketRepository.find({ relations: ['user'] });
+    return await this.ticketRepository.find({ relations: ['user'] });
   }
 
   async findOneByIdAndUpdate(
@@ -283,6 +304,7 @@ export class TicketService {
     toUpdate: Partial<Ticket>,
   ): Promise<Ticket> {
     const ticket = await this.ticketRepository.findOne({
+      relations: ['user'],
       where: {
         id,
       },
@@ -292,5 +314,40 @@ export class TicketService {
       return this.ticketRepository.save(ticket);
     }
     return null;
+  }
+
+  async findAllByQuery(query: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    ticketId?: string; // Use ticketId instead of ticketNumber
+  }): Promise<Ticket[]> {
+    const queryBuilder = this.ticketRepository
+      .createQueryBuilder('ticket')
+      .leftJoinAndSelect('ticket.user', 'user');
+
+    // Dynamically add conditions based on provided query parameters
+    if (query.firstName) {
+      queryBuilder.andWhere('user.first_name LIKE :firstName', {
+        firstName: `%${query.firstName}%`,
+      });
+    }
+    if (query.lastName) {
+      queryBuilder.andWhere('user.last_name LIKE :lastName', {
+        lastName: `%${query.lastName}%`,
+      });
+    }
+    if (query.email) {
+      queryBuilder.andWhere('user.email LIKE :email', {
+        email: `%${query.email}%`,
+      });
+    }
+    if (query.ticketId) {
+      queryBuilder.andWhere('ticket.id = :ticketId', {
+        ticketId: query.ticketId, // Use exact match for ID
+      });
+    }
+
+    return queryBuilder.getMany();
   }
 }

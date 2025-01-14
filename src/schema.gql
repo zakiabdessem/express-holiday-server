@@ -8,7 +8,8 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  tickets: [tickets!]!
+  myTickets: [tickets!]!
+  ticketsByQuery(email: String, firstName: String, lastName: String, ticketId: String): [tickets!]!
   users: [User!]!
   usersByQuery(query: String!): [User!]!
 }
@@ -101,7 +102,7 @@ type tickets {
   transfer: String
   typeOfModification: String
   typeOfService: String
-  user: User!
+  user: User
   userId: String
   username: String
   voucherNumber: String
