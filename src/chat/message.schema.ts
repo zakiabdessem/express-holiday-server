@@ -21,7 +21,7 @@ export class Message {
   @Field({
     nullable: true,
   })
-  @Column({ nullable: false }) // Ensure senderId is non-nullable
+  @Column({ nullable: true }) // Ensure senderId is non-nullable
   senderId: string;
 
   @Field(() => UserEntity, {

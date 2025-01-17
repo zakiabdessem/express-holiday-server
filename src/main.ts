@@ -8,6 +8,7 @@ import helmet from 'helmet';
 import { urlencoded } from 'express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import 'reflect-metadata';
+import { ErrorExceptionFilter } from './filter/auth-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -70,6 +71,8 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Optionally throw an error if extra properties are sent
     }),
   );
+
+  app.useGlobalFilters(new ErrorExceptionFilter());
 
   await app.listen(process.env.PORT || 8080);
 }

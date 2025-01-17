@@ -9,6 +9,7 @@ import {
   TicketBillet4CreateDto,
   TicketBillet5CreateDto,
   TicketBillet6CreateDto,
+  TicketStatus,
 } from './dtos/ticket-create-airline.dto';
 import {
   TicketHotel1CreateDto,
@@ -46,6 +47,32 @@ export class TicketService {
       throw new Error('User not found');
     }
     return user;
+  }
+
+  async countTicketsByStatus(): Promise<{ [key: string]: number }> {
+    // Define all possible statuses from the TicketStatus enum
+    const allStatuses = Object.values(TicketStatus);
+
+    // Initialize the result object with 0 for each status
+    const result: { [key: string]: number } = {};
+    allStatuses.forEach((status) => {
+      result[status] = 0;
+    });
+
+    // Query the database for ticket counts by status
+    const statusCounts = await this.ticketRepository
+      .createQueryBuilder('ticket')
+      .select('ticket.status', 'status')
+      .addSelect('COUNT(ticket.id)', 'count')
+      .groupBy('ticket.status')
+      .getRawMany();
+
+    // Update the result object with counts from the database
+    statusCounts.forEach((statusCount) => {
+      result[statusCount.status] = parseInt(statusCount.count, 10);
+    });
+
+    return result;
   }
 
   async createTicketBillet1Client(

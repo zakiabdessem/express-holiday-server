@@ -5,10 +5,10 @@ import { Repository } from 'typeorm';
 import { SendMessageDto } from './dtos/send-message.dto';
 import { Message } from './message.schema';
 import { Ticket } from 'src/ticket/ticket.schema';
-import { TicketStatus } from 'src/ticket/dtos/ticket-create-airline.dto';
 import * as sanitizeHtml from 'sanitize-html';
 import { UserEntity } from 'src/user/user.schema';
 import { UserRole } from 'src/decorator/role.entity';
+import { TicketStatus } from 'src/ticket/dtos/ticket-create-airline.dto';
 
 @Injectable()
 export class ChatService {
@@ -112,6 +112,12 @@ export class ChatService {
         await transactionalEntityManager.save(Message, message);
       },
     );
+
+    if (ticket.status == TicketStatus.INPROGRESS) return;
+
+    ticket.status = TicketStatus.INPROGRESS;
+
+    await this.ticketRepository.save(ticket);
   }
 
   // Get messages for a specific ticket
@@ -119,6 +125,25 @@ export class ChatService {
     const ticket = await this.ticketRepository.findOne({
       where: { id: ticketId },
       relations: ['messages', 'messages.sender'], // Include the sender relation
+      select: {
+        messages: {
+          id: true,
+          senderId: true,
+          message: true,
+          ticketId: true,
+          createdAt: true,
+          updatedAt: true,
+          sender: {
+            id: true,
+            email: true,
+            first_name: true,
+            last_name: true,
+            profilePicture: true,
+            contactNumber: true,
+            role: true,
+          },
+        },
+      },
     });
 
     if (!ticket) {

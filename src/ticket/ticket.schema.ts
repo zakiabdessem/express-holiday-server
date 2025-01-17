@@ -10,16 +10,11 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { TicketPriority } from './dtos/ticket-create-airline.dto';
+import { TicketPriority, TicketStatus } from './dtos/ticket-create-airline.dto';
 import { Message } from 'src/chat/message.schema';
 import { UserEntity } from 'src/user/user.schema';
 
-enum TicketStatus {
-  INPROGRESS = 'inprogress',
-  CLOSED = 'closed',
-  RESOLVED = 'RESOLVED',
-  OPEN = 'open',
-}
+// Removed the local TicketStatus enum as it is now imported
 
 registerEnumType(TicketPriority, {
   name: 'TicketPrioritys',

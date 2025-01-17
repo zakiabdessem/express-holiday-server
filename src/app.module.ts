@@ -12,6 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import typeorm from './config/typeorm';
 import { CategoryModule } from './category/category.module';
 import { ChatModule } from './chat/message.module';
+import { StatsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -23,7 +24,6 @@ import { ChatModule } from './chat/message.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) =>
         configService.get('typeorm'),
-      
     }),
     forwardRef(() =>
       GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -32,11 +32,19 @@ import { ChatModule } from './chat/message.module';
         sortSchema: true,
         playground: process.env.NODE_ENV !== 'production',
         context: ({ req, res }) => ({ req, res }),
+        formatError: (error) => {
+          return {
+            message: error.message,
+            code: error.extensions?.code,
+            status: error.extensions?.status,
+          };
+        },
       }),
     ),
     UserModule,
     TicketModule,
     ChatModule,
+    StatsModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
@@ -54,7 +62,7 @@ import { ChatModule } from './chat/message.module';
         limit: 100,
       },
     ]),
-    CategoryModule
+    CategoryModule,
   ],
   controllers: [],
   providers: [

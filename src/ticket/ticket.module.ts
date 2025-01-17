@@ -10,7 +10,7 @@ import { UserEntity } from 'src/user/user.schema';
   imports: [TypeOrmModule.forFeature([Ticket, Passenger, UserEntity])],
   controllers: [TicketController],
   providers: [TicketService, TicketResolver],
-  exports: [],
+  exports: [TicketService],
 })
 export class TicketModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {}

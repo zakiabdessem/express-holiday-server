@@ -27,6 +27,7 @@ type User {
   first_name: String!
   id: ID!
   last_name: String!
+  messages: [messages!]
   profilePicture: String
   role: UserRoles!
   tickets: [String]
@@ -42,7 +43,8 @@ type messages {
   createdAt: DateTime!
   id: ID!
   message: String!
-  senderId: String!
+  sender: User
+  senderId: String
   ticket: tickets!
   ticketId: Float!
   updatedAt: DateTime!
