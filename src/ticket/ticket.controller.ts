@@ -8,6 +8,7 @@ import {
   UseFilters,
   Get,
   Logger,
+  Query,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -26,7 +27,7 @@ import { Roles } from 'src/decorator/roles.decorator';
 import { UserRole } from 'src/decorator/role.entity';
 import { ErrorExceptionFilter } from 'src/filter/auth-exception.filter';
 import { DynamicValidationPipe } from './ticket.pipeline';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import {
   TicketCreateHotelDtoApi,
   TicketHotel1CreateDto,
@@ -57,11 +58,12 @@ import {
 import { CurrentUser } from 'src/decorator/user.entity';
 import { UserEntity } from 'src/user/user.schema';
 import { QueryFailedError } from 'typeorm';
+import { SkipThrottle } from '@nestjs/throttler';
+import { Ticket } from './ticket.schema';
 
 @Controller('ticket')
 @UseFilters(new ErrorExceptionFilter())
 export class TicketController {
-
   private readonly logger = new Logger(TicketController.name);
 
   private static readonly TicketAirlineDto: Record<
@@ -715,5 +717,67 @@ export class TicketController {
         });
       }
     }
+  }
+
+  @SkipThrottle()
+  @Get('my-tickets')
+  @Roles(UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get tickets for the authenticated user',
+    description:
+      'Returns a list of tickets associated with the authenticated user.',
+  })
+  async myTickets(@CurrentUser() user: UserEntity) {
+    return this.ticketService.findAllById(user.id);
+  }
+
+  @SkipThrottle()
+  @Get('search')
+  @Roles(UserRole.ADMIN)
+  @UseGuards(GQLRolesGuard)
+  @ApiOperation({
+    summary: 'Search tickets by query parameters',
+    description:
+      'Returns a list of tickets filtered by the provided query parameters.',
+  })
+  @ApiQuery({
+    name: 'firstName',
+    required: false,
+    description: 'First name of the ticket owner.',
+  })
+  @ApiQuery({
+    name: 'lastName',
+    required: false,
+    description: 'Last name of the ticket owner.',
+  })
+  @ApiQuery({
+    name: 'email',
+    required: false,
+    description: 'Email of the ticket owner.',
+  })
+  @ApiQuery({
+    name: 'ticketId',
+    required: false,
+    description: 'ID of the ticket.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of tickets retrieved successfully.',
+    type: [Ticket],
+  })
+  async ticketsByQuery(
+    @Query('firstName') firstName?: string,
+    @Query('lastName') lastName?: string,
+    @Query('email') email?: string,
+    @Query('ticketId') ticketId?: string,
+  ) {
+    return this.ticketService.findAllByQuery({
+      firstName,
+      lastName,
+      email,
+      ticketId,
+    });
   }
 }
