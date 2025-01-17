@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Ticket } from 'src/ticket/ticket.schema'; // Regular import
+import { Ticket } from 'src/ticket/ticket.schema';
+import { UserEntity } from 'src/user/user.schema';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -13,31 +14,42 @@ import {
 @ObjectType('messages')
 @Entity('messages')
 export class Message {
-  @Field(() => ID) // Ensure this decorator is present
+  @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Field() // Ensure this decorator is present
-  @Column()
+  @Field({
+    nullable: true,
+  })
+  @Column({ nullable: false }) // Ensure senderId is non-nullable
   senderId: string;
 
-  @Field() // Ensure this decorator is present
+  @Field(() => UserEntity, {
+    nullable: true,
+  })
+  @ManyToOne(() => UserEntity, (user) => user.messages, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'senderId' })
+  sender: UserEntity;
+
+  @Field()
   @Column()
   message: string;
 
-  @Field() // Ensure this decorator is present
+  @Field()
   @Column()
   ticketId: number;
 
-  @Field(() => Date) // Ensure this decorator is present
+  @Field(() => Date)
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => Date) // Ensure this decorator is present
+  @Field(() => Date)
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => Ticket) // Use a function to resolve the type
+  @Field(() => Ticket)
   @ManyToOne(() => Ticket, (ticket) => ticket.messages)
   @JoinColumn({ name: 'ticketId' })
   ticket: Ticket;

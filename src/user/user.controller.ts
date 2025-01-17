@@ -25,10 +25,13 @@ import { CurrentUser } from 'src/decorator/user.entity';
 import { UserEntity } from './user.schema';
 import { ResetPasswordDto } from './dtos/resetpassword.dto';
 import { ErrorExceptionFilter } from 'src/filter/auth-exception.filter';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('user')
 @UseFilters(new ErrorExceptionFilter())
 export class UserController {
+  private readonly logger = new Logger(UserController.name);
+
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
@@ -40,10 +43,19 @@ export class UserController {
         message: 'Vous avez enregistré avec succès.',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in register', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -59,11 +71,19 @@ export class UserController {
         message: 'Vous avez enregistré avec succès.',
       });
     } catch (error) {
-      console.log(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in registerAdmin', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -75,10 +95,11 @@ export class UserController {
     try {
       const user = await this.userService.loginUser(email, password);
 
-      if (!user)
-        return res
-          .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: 'Invalid credentials' });
+      if (!user) {
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          message: 'Invalid credentials',
+        });
+      }
 
       const refresh_token = sign(
         {
@@ -137,11 +158,19 @@ export class UserController {
           },
         });
     } catch (error) {
-      console.error(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in login', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -159,7 +188,7 @@ export class UserController {
             message: 'No Refresh token found.',
             customCode: 'REFRESH_TOKEN_MISSING',
           },
-          401,
+          HttpStatus.UNAUTHORIZED,
         );
       }
 
@@ -167,7 +196,9 @@ export class UserController {
 
       const user = await this.userService.findOneById(decoded.id);
 
-      if (!user) return res.status(404).json({ auth: false });
+      if (!user) {
+        return res.status(HttpStatus.NOT_FOUND).json({ auth: false });
+      }
 
       delete user.password;
 
@@ -226,11 +257,19 @@ export class UserController {
           },
         });
     } catch (error) {
-      Logger.error(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in verify', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -244,55 +283,62 @@ export class UserController {
           .json({ message: 'User does not exist' });
       }
 
-      // Generate a unique token for resetting password
       const resetToken = await this.userService.generateResetToken(user.id);
 
-      // Send email using Resend API
-      // Note: You have to configure your Resend API client here
-      // See https://resend.com/docs/send-with-nodejs for more setup details
       await this.userService.sendResetPasswordEmail(email, resetToken);
 
       return res
         .status(HttpStatus.OK)
         .json({ message: 'Reset password email sent.' });
     } catch (error) {
-      console.error(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in forgetPassword', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
   @Get('verify-token')
   async verifyToken(
-    @Body()
-    body: {
-      email: string;
-      token: string;
-    },
+    @Body() body: { email: string; token: string },
     @Res() res: Response,
   ) {
     try {
-      return res.status(HttpStatus.OK).json({
-        valid: await this.userService.validateResetToken(
-          body.email,
-          body.token,
-        ),
-      });
+      const isValid = await this.userService.validateResetToken(
+        body.email,
+        body.token,
+      );
+
+      return res.status(HttpStatus.OK).json({ valid: isValid });
     } catch (error) {
-      console.error(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in verifyToken', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
   @Post('reset-password')
   async resetPassword(
-    @Body()
-    resetPasswordDto: ResetPasswordDto,
+    @Body() resetPasswordDto: ResetPasswordDto,
     @Res() res: Response,
   ) {
     try {
@@ -306,11 +352,19 @@ export class UserController {
         .status(HttpStatus.OK)
         .json({ message: 'Password reset successfully.' });
     } catch (error) {
-      console.error(error);
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in resetPassword', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 }

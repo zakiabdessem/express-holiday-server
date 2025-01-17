@@ -7,6 +7,7 @@ import {
   UseGuards,
   UseFilters,
   Get,
+  Logger,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -55,10 +56,14 @@ import {
 } from './dtos/ticket-create-travel.dto';
 import { CurrentUser } from 'src/decorator/user.entity';
 import { UserEntity } from 'src/user/user.schema';
+import { QueryFailedError } from 'typeorm';
 
 @Controller('ticket')
 @UseFilters(new ErrorExceptionFilter())
 export class TicketController {
+
+  private readonly logger = new Logger(TicketController.name);
+
   private static readonly TicketAirlineDto: Record<
     number,
     Record<number, any>
@@ -179,10 +184,19 @@ export class TicketController {
         message: 'Ticket created successfully',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -222,10 +236,19 @@ export class TicketController {
 
       return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -308,10 +331,19 @@ export class TicketController {
         message: 'Ticket created successfully',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -351,10 +383,19 @@ export class TicketController {
 
       return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -409,10 +450,19 @@ export class TicketController {
         message: 'Ticket created successfully',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -443,10 +493,19 @@ export class TicketController {
 
       return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -510,10 +569,19 @@ export class TicketController {
         message: 'Ticket created successfully',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -547,10 +615,19 @@ export class TicketController {
 
       return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -587,10 +664,19 @@ export class TicketController {
         message: 'Ticket created successfully',
       });
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 
@@ -615,10 +701,19 @@ export class TicketController {
 
       return res.status(HttpStatus.OK).json(metadata);
     } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: error.message || 'Internal server error',
-      });
+      this.logger.error('Error in createHotel', error.stack);
+
+      if (error instanceof QueryFailedError) {
+        return res.status(HttpStatus.BAD_GATEWAY).json({
+          statusCode: HttpStatus.BAD_GATEWAY,
+          message: 'Database connection error: ' + error.message,
+        });
+      } else {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: error.message || 'Internal server error',
+        });
+      }
     }
   }
 }

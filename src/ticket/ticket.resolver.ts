@@ -17,10 +17,10 @@ export class TicketResolver {
 
   @SkipThrottle()
   @Query(() => [Ticket])
-  @Roles(UserRole.CLIENT)
+  @Roles(UserRole.ADMIN, UserRole.CLIENT)
   @UseGuards(GQLRolesGuard)
   async myTickets(@CurrentUser() user: UserEntity) {
-    return this.ticketService.findAllById(user.id);
+    return this.ticketService.findAllById(user?.id);
   }
 
   @SkipThrottle()

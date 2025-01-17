@@ -9,6 +9,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { registerEnumType } from '@nestjs/graphql';
 import { UserRole } from 'src/decorator/role.entity';
 import { Ticket } from 'src/ticket/ticket.schema';
+import { Message } from 'src/chat/message.schema';
 
 registerEnumType(UserRole, {
   name: 'UserRoles',
@@ -55,6 +56,14 @@ export class UserEntity extends BaseEntity {
   @Field(() => [String], { nullable: 'itemsAndList' })
   @OneToMany(() => Ticket, (ticket) => ticket.user)
   tickets: string[];
+
+  @Field(() => [Message], {
+    nullable: true,
+  }) // Add this field
+  @OneToMany(() => Message, (message) => message.sender, {
+    nullable: true,
+  })
+  messages: Message[];
 
   @Field(() => UserRole)
   @Column({
