@@ -25,6 +25,7 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     true, // Always include metadata
     false, // Don't use strict group filtering
   );
+  console.log("🚀 ~ getDtoMetadata ~ validationMetadatas:", validationMetadatas)
 
   const fields: DtoFieldMetadata[] = [];
 
@@ -70,10 +71,10 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     const enumMetadata = validationMetadata.find(
       (meta: ValidationMetadata) => meta.name === 'isEnum',
     );
-    
+
     if (enumMetadata) {
-      const enumConstraint = enumMetadata.constraints.find(
-        (constraint: any) => Array.isArray(constraint)
+      const enumConstraint = enumMetadata.constraints.find((constraint: any) =>
+        Array.isArray(constraint),
       );
       if (enumConstraint) {
         fieldMetadata.enum = enumConstraint;
@@ -85,6 +86,8 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     if (typeMetadata) {
       fieldMetadata.type = typeMetadata.name.toLowerCase();
     }
+
+    console.log('🚀 ~ getDtoMetadata ~ fieldMetadata:', fieldMetadata);
 
     // Determine UI input type based on field type and metadata
     if (fieldMetadata.enum) {

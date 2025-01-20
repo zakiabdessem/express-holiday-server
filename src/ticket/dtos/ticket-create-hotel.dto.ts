@@ -97,8 +97,6 @@ export class TicketHotel1CreateDto {
   })
   @ValidateNested({ each: true })
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
   passengers: PassengerDetailsDto[];
 
