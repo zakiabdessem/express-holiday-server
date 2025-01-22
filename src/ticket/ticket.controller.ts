@@ -9,6 +9,8 @@ import {
   Get,
   Logger,
   Query,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -27,7 +29,14 @@ import { Roles } from 'src/decorator/roles.decorator';
 import { UserRole } from 'src/decorator/role.entity';
 import { ErrorExceptionFilter } from 'src/filter/auth-exception.filter';
 import { DynamicValidationPipe } from './ticket.pipeline';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+} from '@nestjs/swagger';
 import {
   TicketCreateHotelDtoApi,
   TicketHotel1CreateDto,
@@ -717,6 +726,34 @@ export class TicketController {
         });
       }
     }
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Get single ticket details',
+    description: 'Fetch details of a ticket by its ID.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the ticket to retrieve',
+    required: true,
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Details of the ticket retrieved successfully.',
+    type: Ticket,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Ticket not found.',
+  })
+  async getTicketById(@Param('id', ParseIntPipe) id: number): Promise<Ticket> {
+    const ticket = await this.ticketService.findOne(id);
+    if (!ticket) {
+      throw new Error('Ticket not found');
+    }
+    return ticket;
   }
 
   @SkipThrottle()

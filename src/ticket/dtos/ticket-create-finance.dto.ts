@@ -58,9 +58,7 @@ export class TicketFinance1Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -121,9 +119,7 @@ export class TicketFinance2Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -186,9 +182,7 @@ export class TicketFinance3Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(

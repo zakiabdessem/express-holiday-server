@@ -25,7 +25,10 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     true, // Always include metadata
     false, // Don't use strict group filtering
   );
-  console.log("🚀 ~ getDtoMetadata ~ validationMetadatas:", validationMetadatas)
+  console.log(
+    '🚀 ~ getDtoMetadata ~ validationMetadatas:',
+    validationMetadatas,
+  );
 
   const fields: DtoFieldMetadata[] = [];
 
@@ -53,6 +56,18 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
       fieldMetadata.minLength = apiProperty.minLength;
       fieldMetadata.maxLength = apiProperty.maxLength;
       fieldMetadata.isArray = apiProperty.isArray;
+    }
+
+    const transformMetadata = Reflect.getMetadata(
+      'design:type',
+      dto.prototype,
+      key,
+    );
+    if (fieldMetadata.isArray && transformMetadata) {
+      const nestedType = Reflect.getMetadata('design:type', dto.prototype, key);
+      if (nestedType) {
+        fieldMetadata.nestedType = nestedType.name;
+      }
     }
 
     // Get @IsNotEmpty() and other validation metadata
@@ -86,9 +101,6 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     if (typeMetadata) {
       fieldMetadata.type = typeMetadata.name.toLowerCase();
     }
-
-    console.log('🚀 ~ getDtoMetadata ~ fieldMetadata:', fieldMetadata);
-
     // Determine UI input type based on field type and metadata
     if (fieldMetadata.enum) {
       fieldMetadata.uiType = 'dropdown'; // Use dropdown for enum fields

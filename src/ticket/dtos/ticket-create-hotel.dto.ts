@@ -108,9 +108,7 @@ export class TicketHotel1CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -207,8 +205,6 @@ export class TicketHotel2CreateDto {
   })
   @ValidateNested({ each: true })
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
   passengers: PassengerDetailsDto[];
 
@@ -220,9 +216,7 @@ export class TicketHotel2CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -309,9 +303,7 @@ export class TicketHotel3CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -425,9 +417,7 @@ export class TicketHotel4CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -517,11 +507,8 @@ export class TicketHotel5CreateDto {
   })
   @ValidateNested({ each: true })
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
   passengers: PassengerDetailsDto[];
-
 
   @ApiProperty({
     example: 'Detailed description of the issue here...',
@@ -531,9 +518,7 @@ export class TicketHotel5CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -591,9 +576,7 @@ export class TicketHotel6CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(subcategory: number, subject: string, description: string) {

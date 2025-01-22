@@ -88,9 +88,7 @@ export class TicketSales1Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -230,9 +228,7 @@ export class TicketSales2Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -293,9 +289,7 @@ export class TicketSales3Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(subject: string, description: string) {
@@ -351,9 +345,7 @@ export class TicketSales4Dto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(

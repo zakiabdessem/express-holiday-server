@@ -75,9 +75,7 @@ export class TicketBillet1CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string; //DIMA
 
   // @IsNotEmpty()
@@ -166,9 +164,7 @@ export class TicketBillet2CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -275,9 +271,7 @@ export class TicketBillet3CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -344,7 +338,6 @@ export class TicketBillet4CreateDto {
   @ValidateNested({ each: true })
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(1)
   @Type(() => PassengerDetailsDto)
   passengers: PassengerDetailsDto[];
 
@@ -356,9 +349,7 @@ export class TicketBillet4CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(
@@ -420,9 +411,7 @@ export class TicketBillet5CreateDto {
     maximum: 255,
   })
   @IsString()
-  @IsNotEmpty()
-  @MinLength(25)
-  @MaxLength(255)
+  @IsOptional()
   description: string;
 
   constructor(estimatedTickets: number, officeId: number, description: string) {
