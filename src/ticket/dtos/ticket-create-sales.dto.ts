@@ -6,6 +6,7 @@ import {
   MinLength,
   MaxLength,
   IsEnum,
+  IsOptional,
 } from 'class-validator';
 
 enum RoomType {

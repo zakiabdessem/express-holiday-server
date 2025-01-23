@@ -280,12 +280,14 @@ export class TicketBillet3CreateDto {
     pnr: string,
     passengers: PassengerDetailsDto[],
     description: string,
+    datesAndItineraries: string[],
   ) {
     this.changeReason = changeReason;
     this.refundReason = refundReason;
     this.pnr = pnr;
     this.passengers = passengers;
     this.description = description;
+    this.datesAndItineraries = datesAndItineraries;
   }
 }
 

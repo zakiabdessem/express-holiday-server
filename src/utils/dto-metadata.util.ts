@@ -1,5 +1,4 @@
-import { plainToInstance, Type } from 'class-transformer';
-import { ValidationMetadata } from 'class-validator/types/metadata/ValidationMetadata';
+import { plainToInstance } from 'class-transformer';
 import { getMetadataStorage } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -25,10 +24,6 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     true, // Always include metadata
     false, // Don't use strict group filtering
   );
-  console.log(
-    '🚀 ~ getDtoMetadata ~ validationMetadatas:',
-    validationMetadatas,
-  );
 
   const fields: DtoFieldMetadata[] = [];
 
@@ -42,58 +37,62 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
       uiType: 'input', // Default to 'input'
       required: false,
     };
+    console.log("🚀 ~ getDtoMetadata ~ fieldMetadata:", fieldMetadata)
 
     // Get @ApiProperty() metadata
-    const apiProperty = Reflect.getMetadata(
+    const apiProperties = Reflect.getMetadata(
       'swagger/apiModelPropertiesArray',
       dto.prototype,
-    )?.find((prop: any) => prop.name === key);
-    if (apiProperty) {
-      fieldMetadata.type = apiProperty.type;
-      fieldMetadata.example = apiProperty.example;
-      fieldMetadata.description = apiProperty.description;
-      fieldMetadata.enum = apiProperty.enum;
-      fieldMetadata.minLength = apiProperty.minLength;
-      fieldMetadata.maxLength = apiProperty.maxLength;
-      fieldMetadata.isArray = apiProperty.isArray;
-    }
-
-    const transformMetadata = Reflect.getMetadata(
-      'design:type',
-      dto.prototype,
-      key,
     );
-    if (fieldMetadata.isArray && transformMetadata) {
-      const nestedType = Reflect.getMetadata('design:type', dto.prototype, key);
-      if (nestedType) {
-        fieldMetadata.nestedType = nestedType.name;
+
+    if (apiProperties) {
+      const apiProperty = apiProperties.find((prop: any) => prop.name === key);
+      if (apiProperty) {
+        fieldMetadata.type = apiProperty.type || 'unknown';
+        fieldMetadata.example = apiProperty.example;
+        fieldMetadata.description = apiProperty.description;
+        fieldMetadata.enum = apiProperty.enum;
+        fieldMetadata.minLength = apiProperty.minLength;
+        fieldMetadata.maxLength = apiProperty.maxLength;
+        fieldMetadata.isArray = apiProperty.isArray;
       }
     }
 
-    // Get @IsNotEmpty() and other validation metadata
+    // Get validation metadata
     const validationMetadata = validationMetadatas.filter(
-      (meta: ValidationMetadata) => meta.propertyName === key,
+      (meta: any) => meta.propertyName === key,
     );
 
-    if (
-      validationMetadata.some(
-        (meta: ValidationMetadata) => meta.name === 'isNotEmpty',
-      )
-    ) {
+    // Check for @IsArray()
+    const isArrayMetadata = validationMetadata.find(
+      (meta: any) => meta.name === 'isArray',
+    );
+    if (isArrayMetadata) {
+      fieldMetadata.isArray = true;
+    }
+
+    // Check for @ArrayMinSize()
+    const arrayMinSizeMetadata = validationMetadata.find(
+      (meta: any) => meta.name === 'arrayMinSize',
+    );
+    if (arrayMinSizeMetadata) {
+      fieldMetadata.minLength = arrayMinSizeMetadata.constraints[0];
+    }
+
+    // Check for @IsNotEmpty()
+    const isNotEmptyMetadata = validationMetadata.find(
+      (meta: any) => meta.name === 'isNotEmpty',
+    );
+    if (isNotEmptyMetadata) {
       fieldMetadata.required = true;
     }
 
-    const enumMetadata = validationMetadata.find(
-      (meta: ValidationMetadata) => meta.name === 'isEnum',
+    // Check for @IsString()
+    const isStringMetadata = validationMetadata.find(
+      (meta: any) => meta.name === 'isString',
     );
-
-    if (enumMetadata) {
-      const enumConstraint = enumMetadata.constraints.find((constraint: any) =>
-        Array.isArray(constraint),
-      );
-      if (enumConstraint) {
-        fieldMetadata.enum = enumConstraint;
-      }
+    if (isStringMetadata) {
+      fieldMetadata.type = 'string';
     }
 
     // Handle nested types (e.g., @Type(() => SomeClass))
@@ -101,6 +100,7 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
     if (typeMetadata) {
       fieldMetadata.type = typeMetadata.name.toLowerCase();
     }
+
     // Determine UI input type based on field type and metadata
     if (fieldMetadata.enum) {
       fieldMetadata.uiType = 'dropdown'; // Use dropdown for enum fields
