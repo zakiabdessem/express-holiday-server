@@ -9,6 +9,7 @@ import {
   UseFilters,
   Logger,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { ChatService } from './message.service';
 import { SendMessageDto } from './dtos/send-message.dto';
@@ -29,6 +30,8 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post('client/send')
+  @Roles(UserRole.CLIENT)
+  @UseGuards(GQLRolesGuard)
   async sendMessage(
     @Body() sendMessageDto: SendMessageDto,
     @CurrentUser() user: UserEntity,
@@ -66,6 +69,20 @@ export class ChatController {
   }
 
   @Post('messages')
+  @Roles(
+    UserRole.CLIENT,
+    UserRole.ADMIN,
+    UserRole.SUPERAGENT,
+    UserRole.AGENT_AIRLINE,
+    UserRole.AGENT_FINANCE,
+    UserRole.AGENT_HOTEL,
+    UserRole.AGENT_SALES,
+    UserRole.AGENT_TRAVEL,
+    UserRole.AGENT_MARITIME,
+    UserRole.AGENT_TECHNICAL,
+    UserRole.AGENT_VISA,
+  )
+  @UseGuards(GQLRolesGuard)
   async getMessage(
     @Body() body: { ticketId: number },
     @CurrentUser() user: UserEntity,
@@ -80,7 +97,39 @@ export class ChatController {
         });
       }
 
-      const messages = await this.chatService.getMessages(body.ticketId, user);
+      let messages;
+
+      if (
+        user.role === UserRole.CLIENT ||
+        user.role === UserRole.ADMIN ||
+        user.role === UserRole.SUPERAGENT
+      ) {
+        messages = await this.chatService.getMessages(body.ticketId, user);
+      } else {
+        const roleToCategoryMap = {
+          [UserRole.AGENT_AIRLINE]: 1, // Service Billetterie aerienne
+          [UserRole.AGENT_HOTEL]: 2, // Service hôtellerie
+          [UserRole.AGENT_FINANCE]: 3, // Service Finance
+          [UserRole.AGENT_SALES]: 4, // Service Commercial -- Sales departement
+          [UserRole.AGENT_TRAVEL]: 5, // Service Omra & Voyages Organises
+          [UserRole.AGENT_MARITIME]: 6, // Billetterie Martitime
+          [UserRole.AGENT_TECHNICAL]: 7, // Service technique
+          [UserRole.AGENT_VISA]: 8, // Service visa
+        };
+
+        // Get the category ID based on the user's role
+        const categoryId = roleToCategoryMap[user.role];
+
+        if (!categoryId) {
+          throw new NotFoundException('No category found for the user role');
+        }
+
+        messages = await this.chatService.getMessagesAgent(
+          body.ticketId,
+          user,
+          categoryId,
+        );
+      }
 
       // Check if messages were found
       if (!messages || messages.length === 0) {
@@ -111,10 +160,21 @@ export class ChatController {
     }
   }
 
-  @Post('admin/send')
-  @Roles(UserRole.ADMIN, UserRole.SUPERAGENT)
+  @Post('agent/send')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.SUPERAGENT,
+    UserRole.AGENT_AIRLINE,
+    UserRole.AGENT_FINANCE,
+    UserRole.AGENT_HOTEL,
+    UserRole.AGENT_SALES,
+    UserRole.AGENT_TRAVEL,
+    UserRole.AGENT_MARITIME,
+    UserRole.AGENT_TECHNICAL,
+    UserRole.AGENT_VISA,
+  )
   @UseGuards(GQLRolesGuard)
-  async adminSendMessage(
+  async agentSendMessage(
     @Body() sendMessageDto: SendMessageDto,
     @CurrentUser() user: UserEntity,
     @Res() res: Response,
@@ -128,15 +188,32 @@ export class ChatController {
         });
       }
 
-      // Ensure the user has the ADMIN or SUPERAGENT role
-      if (user.role !== UserRole.ADMIN && user.role !== UserRole.SUPERAGENT) {
-        return res.status(HttpStatus.FORBIDDEN).json({
-          statusCode: HttpStatus.FORBIDDEN,
-          message: 'You do not have permission to perform this action.',
-        });
+      if (user.role === UserRole.ADMIN || user.role === UserRole.SUPERAGENT) {
+        return this.chatService.sendMessageAdmin(sendMessageDto, user.id);
       }
 
-      await this.chatService.sendMessageAdmin(sendMessageDto, user.id);
+      const roleToCategoryMap = {
+        [UserRole.AGENT_AIRLINE]: 1, // Service Billetterie aerienne
+        [UserRole.AGENT_HOTEL]: 2, // Service hôtellerie
+        [UserRole.AGENT_FINANCE]: 3, // Service Finance
+        [UserRole.AGENT_SALES]: 4, // Service Commercial -- Sales departement
+        [UserRole.AGENT_TRAVEL]: 5, // Service Omra & Voyages Organises
+        [UserRole.AGENT_MARITIME]: 6, // Billetterie Martitime
+        [UserRole.AGENT_TECHNICAL]: 7, // Service technique
+        [UserRole.AGENT_VISA]: 8, // Service visa
+      };
+
+      const categoryId = roleToCategoryMap[user.role];
+
+      if (!categoryId) {
+        throw new NotFoundException('No category found for the user role');
+      }
+
+      await this.chatService.sendMessageAgent(
+        sendMessageDto,
+        user.id,
+        categoryId,
+      );
 
       return res.status(HttpStatus.OK).json({
         message: 'Message sent successfully',

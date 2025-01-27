@@ -120,6 +120,60 @@ export class ChatService {
     await this.ticketRepository.save(ticket);
   }
 
+  // Send a message for a specific ticket (admin/superagent)
+  async sendMessageAgent(
+    sendMessageDto: SendMessageDto,
+    userId: string,
+    categoryId: number,
+  ) {
+    const ticket = await this.ticketRepository.findOne({
+      where: { id: sendMessageDto.ticketId, categoryId },
+    });
+
+    // Check if the ticket exists
+    if (!ticket) {
+      throw new HttpException(
+        {
+          message: 'Ticket not found.',
+          customCode: 'TICKET_NOT_FOUND',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    // Check if the ticket is closed or resolved
+    if (
+      ticket.status === TicketStatus.CLOSED ||
+      ticket.status === TicketStatus.RESOLVED
+    ) {
+      throw new HttpException(
+        {
+          message: 'Cannot send messages to a closed or resolved ticket.',
+          customCode: 'TICKET_CLOSED',
+        },
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    // Save the message in a transaction
+    await this.messageRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const message = transactionalEntityManager.create(Message, {
+          senderId: userId,
+          message: sanitizeHtml(sendMessageDto.message),
+          ticketId: sendMessageDto.ticketId,
+        });
+        await transactionalEntityManager.save(Message, message);
+      },
+    );
+
+    if (ticket.status == TicketStatus.INPROGRESS) return;
+
+    ticket.status = TicketStatus.INPROGRESS;
+
+    await this.ticketRepository.save(ticket);
+  }
+
   // Get messages for a specific ticket
   async getMessages(ticketId: number, user: UserEntity) {
     const ticket = await this.ticketRepository.findOne({
@@ -156,6 +210,62 @@ export class ChatService {
     }
 
     if (user?.role === UserRole.CLIENT && user?.id === ticket.userId) {
+      return ticket.messages || [];
+    }
+
+    if (
+      user?.role !== UserRole.CLIENT &&
+      ![UserRole.ADMIN, UserRole.SUPERAGENT].includes(user?.role)
+    ) {
+    }
+
+    return [];
+  }
+
+  async getMessagesAgent(
+    ticketId: number,
+    user: UserEntity,
+    categoryId: number,
+  ) {
+    const ticket = await this.ticketRepository.findOne({
+      where: { id: ticketId, categoryId },
+      relations: ['messages', 'messages.sender'], // Include the sender relation
+      select: {
+        messages: {
+          id: true,
+          senderId: true,
+          message: true,
+          ticketId: true,
+          createdAt: true,
+          updatedAt: true,
+          sender: {
+            id: true,
+            email: true,
+            first_name: true,
+            last_name: true,
+            profilePicture: true,
+            contactNumber: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    if (!ticket) {
+      return [];
+    }
+
+    // Check user permissions
+    if (user?.role === UserRole.ADMIN || user?.role === UserRole.SUPERAGENT) {
+      return ticket.messages || [];
+    }
+
+    if (user?.role === UserRole.CLIENT && user?.id === ticket.userId) {
+      return ticket.messages || [];
+    }
+
+    // Ensure that the agent can only access tickets in their category
+    if (user?.role !== UserRole.CLIENT && ticket.categoryId === categoryId) {
       return ticket.messages || [];
     }
 
