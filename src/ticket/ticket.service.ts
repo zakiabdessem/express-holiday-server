@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { Ticket } from './ticket.schema';
@@ -31,6 +35,7 @@ import {
   TicketSales4Dto,
 } from './dtos/ticket-create-sales.dto';
 import { TicketTravelDetailsDto } from './dtos/ticket-create-travel.dto';
+import { UserRole } from 'src/decorator/role.entity';
 
 @Injectable()
 export class TicketService {
@@ -40,6 +45,17 @@ export class TicketService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
+
+  private readonly roleToCategoryMap = {
+    [UserRole.AGENT_AIRLINE]: 1, // Service Billetterie aerienne
+    [UserRole.AGENT_HOTEL]: 2, // Service hôtellerie
+    [UserRole.AGENT_FINANCE]: 3, // Service Finance
+    [UserRole.AGENT_SALES]: 4, // Service Commercial -- Sales departement
+    [UserRole.AGENT_TRAVEL]: 5, // Service Omra & Voyages Organises
+    [UserRole.AGENT_MARITIME]: 6, // Billetterie Martitime
+    [UserRole.AGENT_TECHNICAL]: 7, // Service technique
+    [UserRole.AGENT_VISA]: 8, // Service visa
+  };
 
   private async setUserRelationship(userId: string): Promise<UserEntity> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
@@ -313,6 +329,48 @@ export class TicketService {
     });
   }
 
+  async getTicketDetails(id: number, user: UserEntity): Promise<Ticket> {
+    const ticket = await this.ticketRepository.findOne({
+      relations: ['user'],
+      where: {
+        id,
+      },
+    });
+    
+    if (!ticket) {
+      throw new NotFoundException('Ticket not found');
+    }
+
+    // Admins and superagents can access any ticket
+    if (user.role === UserRole.ADMIN || user.role === UserRole.SUPERAGENT) {
+      return ticket;
+    }
+
+    // Clients can only access their own tickets
+    if (user.role === UserRole.CLIENT) {
+      if (ticket.user.id !== user.id) {
+        throw new ForbiddenException(
+          'You do not have permission to access this ticket',
+        );
+      }
+      return ticket;
+    }
+
+    // Agents can only access tickets in their assigned category
+    const categoryId = this.roleToCategoryMap[user.role];
+    if (!categoryId) {
+      throw new ForbiddenException('No category found for the user role');
+    }
+
+    if (ticket.categoryId !== categoryId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this ticket',
+      );
+    }
+
+    return ticket;
+  }
+
   async findAllById(id: string): Promise<Ticket[]> {
     return await this.ticketRepository.find({
       relations: ['user'],
@@ -347,7 +405,8 @@ export class TicketService {
     firstName?: string;
     lastName?: string;
     email?: string;
-    ticketId?: string; // Use ticketId instead of ticketNumber
+    ticketId?: string;
+    categoryId?: number; // Add categoryId to the query
   }): Promise<Ticket[]> {
     const queryBuilder = this.ticketRepository
       .createQueryBuilder('ticket')
@@ -371,10 +430,24 @@ export class TicketService {
     }
     if (query.ticketId) {
       queryBuilder.andWhere('ticket.id = :ticketId', {
-        ticketId: query.ticketId, // Use exact match for ID
+        ticketId: query.ticketId,
+      });
+    }
+    if (query.categoryId) {
+      queryBuilder.andWhere('ticket.categoryId = :categoryId', {
+        categoryId: query.categoryId,
       });
     }
 
     return queryBuilder.getMany();
+  }
+
+  async findAllByCategoryId(id: number): Promise<Ticket[]> {
+    return await this.ticketRepository.find({
+      relations: ['user'],
+      where: {
+        categoryId: id,
+      },
+    });
   }
 }

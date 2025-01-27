@@ -11,6 +11,7 @@ import {
   Query,
   Param,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -728,10 +729,26 @@ export class TicketController {
     }
   }
 
-  @Get(':id')
+  @Get('details/:id')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.SUPERAGENT,
+    UserRole.AGENT_AIRLINE,
+    UserRole.AGENT_FINANCE,
+    UserRole.AGENT_HOTEL,
+    UserRole.AGENT_SALES,
+    UserRole.AGENT_TRAVEL,
+    UserRole.AGENT_MARITIME,
+    UserRole.AGENT_TECHNICAL,
+    UserRole.AGENT_VISA,
+    UserRole.CLIENT, // Add CLIENT role
+  )
+  @UseGuards(GQLRolesGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Get single ticket details',
-    description: 'Fetch details of a ticket by its ID.',
+    description:
+      'Fetch details of a ticket by its ID. Admins and superagents can access any ticket, agents can access tickets in their assigned category, and clients can only access their own tickets.',
   })
   @ApiParam({
     name: 'id',
@@ -745,15 +762,68 @@ export class TicketController {
     type: Ticket,
   })
   @ApiResponse({
+    status: 403,
+    description:
+      'Forbidden. User does not have permission to access this ticket.',
+  })
+  @ApiResponse({
     status: 404,
     description: 'Ticket not found.',
   })
-  async getTicketById(@Param('id', ParseIntPipe) id: number): Promise<Ticket> {
-    const ticket = await this.ticketService.findOne(id);
-    if (!ticket) {
-      throw new Error('Ticket not found');
+  async getTicketById(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: UserEntity,
+  ): Promise<Ticket> {
+    return this.ticketService.getTicketDetails(id, user);
+  }
+
+  @SkipThrottle()
+  @Get('agent-tickets')
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.SUPERAGENT,
+    UserRole.AGENT_AIRLINE,
+    UserRole.AGENT_FINANCE,
+    UserRole.AGENT_HOTEL,
+    UserRole.AGENT_SALES,
+    UserRole.AGENT_TRAVEL,
+    UserRole.AGENT_MARITIME,
+    UserRole.AGENT_TECHNICAL,
+    UserRole.AGENT_VISA,
+  )
+  @UseGuards(GQLRolesGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get tickets for the authenticated user',
+    description: 'Returns a list of tickets associated with the agent.',
+  })
+  async agentTickets(@CurrentUser() user: UserEntity) {
+    if (user.role === UserRole.ADMIN || user.role === UserRole.SUPERAGENT) {
+      return this.ticketService.findAll();
     }
-    return ticket;
+
+    const roleToCategoryMap = {
+      [UserRole.AGENT_AIRLINE]: 1, // Service Billetterie aerienne
+      [UserRole.AGENT_HOTEL]: 2, // Service hôtellerie
+      [UserRole.AGENT_FINANCE]: 3, // Service Finance
+      [UserRole.AGENT_SALES]: 4, // Service Commercial -- Sales departement
+      [UserRole.AGENT_TRAVEL]: 5, // Service Omra & Voyages Organises
+      [UserRole.AGENT_MARITIME]: 6, // Billetterie Martitime
+      [UserRole.AGENT_TECHNICAL]: 7, // Service technique
+      [UserRole.AGENT_VISA]: 8, // Service visa
+    };
+
+    // Get the category ID based on the user's role
+    const categoryId = roleToCategoryMap[user.role];
+
+    if (!categoryId) {
+      throw new NotFoundException('No category found for the user role');
+    }
+
+    // Fetch tickets by category ID
+    const tickets = await this.ticketService.findAllByCategoryId(categoryId);
+
+    return tickets;
   }
 
   @SkipThrottle()
@@ -772,12 +842,24 @@ export class TicketController {
 
   @SkipThrottle()
   @Get('search')
-  @Roles(UserRole.ADMIN)
+  @Roles(
+    UserRole.ADMIN,
+    UserRole.SUPERAGENT,
+    UserRole.AGENT_AIRLINE,
+    UserRole.AGENT_FINANCE,
+    UserRole.AGENT_HOTEL,
+    UserRole.AGENT_SALES,
+    UserRole.AGENT_TRAVEL,
+    UserRole.AGENT_MARITIME,
+    UserRole.AGENT_TECHNICAL,
+    UserRole.AGENT_VISA,
+  )
   @UseGuards(GQLRolesGuard)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Search tickets by query parameters',
     description:
-      'Returns a list of tickets filtered by the provided query parameters.',
+      'Returns a list of tickets filtered by the provided query parameters. Admins and superagents can search across all tickets, while agents are restricted to their assigned categories.',
   })
   @ApiQuery({
     name: 'firstName',
@@ -805,16 +887,47 @@ export class TicketController {
     type: [Ticket],
   })
   async ticketsByQuery(
+    @CurrentUser() user: UserEntity,
     @Query('firstName') firstName?: string,
     @Query('lastName') lastName?: string,
     @Query('email') email?: string,
     @Query('ticketId') ticketId?: string,
   ) {
+    // Map user roles to category IDs
+    const roleToCategoryMap = {
+      [UserRole.AGENT_AIRLINE]: 1, // Service Billetterie aerienne
+      [UserRole.AGENT_HOTEL]: 2, // Service hôtellerie
+      [UserRole.AGENT_FINANCE]: 3, // Service Finance
+      [UserRole.AGENT_SALES]: 4, // Service Commercial -- Sales departement
+      [UserRole.AGENT_TRAVEL]: 5, // Service Omra & Voyages Organises
+      [UserRole.AGENT_MARITIME]: 6, // Billetterie Martitime
+      [UserRole.AGENT_TECHNICAL]: 7, // Service technique
+      [UserRole.AGENT_VISA]: 8, // Service visa
+    };
+
+    // If user is ADMIN or SUPERAGENT, search across all tickets
+    if (user.role === UserRole.ADMIN || user.role === UserRole.SUPERAGENT) {
+      return this.ticketService.findAllByQuery({
+        firstName,
+        lastName,
+        email,
+        ticketId,
+      });
+    }
+
+    // For agents, restrict search to their assigned category
+    const categoryId = roleToCategoryMap[user.role];
+
+    if (!categoryId) {
+      throw new NotFoundException('No category found for the user role');
+    }
+
     return this.ticketService.findAllByQuery({
       firstName,
       lastName,
       email,
       ticketId,
+      categoryId, // Add categoryId to the query
     });
   }
 }

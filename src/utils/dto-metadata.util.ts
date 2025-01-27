@@ -37,7 +37,6 @@ export function getDtoMetadata(dto: any): DtoFieldMetadata[] {
       uiType: 'input', // Default to 'input'
       required: false,
     };
-    console.log("🚀 ~ getDtoMetadata ~ fieldMetadata:", fieldMetadata)
 
     // Get @ApiProperty() metadata
     const apiProperties = Reflect.getMetadata(
